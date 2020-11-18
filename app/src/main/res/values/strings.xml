@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Tasket</string>
+    <string name="create_team">Create Team</string>
+    <string name="view_tasks">View Tasks</string>
+    <string name="view_profile">View Profile</string>
+    <string name="welcome">Welcome to Tasket!</string>
+
+
 </resources>
