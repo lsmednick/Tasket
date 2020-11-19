@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "898075571885",
+    "firebase_url": "https://tasket-bf4b2.firebaseio.com",
+    "project_id": "tasket-bf4b2",
+    "storage_bucket": "tasket-bf4b2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:898075571885:android:a2eddd10a0fc9781d07824",
+        "android_client_info": {
+          "package_name": "edu.neu.madcourse.tasket"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "898075571885-n29p0jhdtvg45r71q6kbsmrnq0tat604.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBaYaMgqrpqYSVRRlF_GAnm6WAQiZOrx4Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "898075571885-n29p0jhdtvg45r71q6kbsmrnq0tat604.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
