@@ -4,6 +4,12 @@
     <string name="view_tasks">View Tasks</string>
     <string name="view_profile">View Profile</string>
     <string name="welcome">Welcome to Tasket!</string>
-
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="sign_in">Sign In</string>
+    <string name="logout">Logout</string>
+    <string name="already_registered">Already have an account? Sign in here.</string>
+    <string name="not_registered">Not registered? Sign up here.</string>
 
 </resources>
