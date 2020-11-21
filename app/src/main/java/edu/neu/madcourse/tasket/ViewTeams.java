@@ -4,9 +4,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
 import com.bignerdranch.expandablerecyclerview.Model.ParentObject;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,6 +36,12 @@ public class ViewTeams extends AppCompatActivity {
         teamExpandableAdaptor.setParentClickableViewAnimationDefaultDuration();
         teamExpandableAdaptor.setParentAndIconExpandOnClick(true);
         myRecycler.setAdapter(teamExpandableAdaptor);
+
+        FloatingActionButton createTeam = findViewById(R.id.addTeam);
+        createTeam.setOnClickListener(v -> {
+            Intent viewTeams_to_createTeam = new Intent(this, CreateTeam.class);
+            startActivity(viewTeams_to_createTeam);
+        });
 
     }
 
