@@ -31,6 +31,17 @@
         app:layout_constraintVertical_bias="0.06" />
 
     <Button
+        android:id="@+id/viewTaskButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/view_tasks"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/logout_btn"
+        app:layout_constraintVertical_bias="0.107" />
+
+    <Button
         android:id="@+id/home_to_ViewTeams_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

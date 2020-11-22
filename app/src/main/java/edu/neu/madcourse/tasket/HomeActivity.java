@@ -23,6 +23,7 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         btnLogout = findViewById(R.id.logout_btn);
+        Button viewTask = findViewById(R.id.viewTaskButton);
 
         btnLogout.setOnClickListener(v -> {
             FirebaseAuth.getInstance().signOut();
@@ -36,6 +37,14 @@ public class HomeActivity extends AppCompatActivity {
         btnViewTeams.setOnClickListener(v -> {
             Intent home_to_view_teams = new Intent(HomeActivity.this, ViewTeams.class);
             startActivity(home_to_view_teams);
+        });
+
+        viewTask.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(HomeActivity.this, ViewTaskActivity.class);
+                startActivity(i);
+            }
         });
     }
 }
