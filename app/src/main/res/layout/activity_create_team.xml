@@ -120,7 +120,7 @@
         android:layout_marginBottom="40dp"
         android:text="Set Permissions"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/save_team_button"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -145,5 +145,16 @@
         app:layout_constraintStart_toEndOf="@id/text_view_subteams"
         app:layout_constraintTop_toTopOf="@id/text_view_subteams"
         app:srcCompat="@android:drawable/ic_menu_add" />
+
+    <Button
+        android:id="@+id/save_team_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:text="Save"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/permissions_button"
+        tools:layout_editor_absoluteY="643dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

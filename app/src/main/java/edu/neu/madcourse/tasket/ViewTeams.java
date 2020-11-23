@@ -25,7 +25,7 @@ public class ViewTeams extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_teams);
 
-        // create team objects so we can add them to the recycler view
+        // create team objects associated with user so we can add them to the recycler view
         // ArrayList<ParentObject> myTeams = createTeams();
 
         // set up recycler view
@@ -37,6 +37,8 @@ public class ViewTeams extends AppCompatActivity {
         teamExpandableAdaptor.setParentAndIconExpandOnClick(true);
         myRecycler.setAdapter(teamExpandableAdaptor);
 
+
+        // go to create team activity
         FloatingActionButton createTeam = findViewById(R.id.addTeam);
         createTeam.setOnClickListener(v -> {
             Intent viewTeams_to_createTeam = new Intent(this, CreateTeam.class);
@@ -48,6 +50,8 @@ public class ViewTeams extends AppCompatActivity {
     private ArrayList<ParentObject> createTeams() {
         ArrayList<ParentObject> teams = new ArrayList<>();
 
+
+        //temporary team building with default information
         for (int i = 0; i < 9; i++) {
             //generate sample subteams
             ArrayList<Object> subteams = new ArrayList<>();
