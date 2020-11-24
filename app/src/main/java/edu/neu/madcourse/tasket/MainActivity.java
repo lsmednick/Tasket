@@ -59,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
 
                                     }
                                     else {
+                                        Toast.makeText(MainActivity.this, "Registered successfully.", Toast.LENGTH_SHORT).show();
                                         startActivity(new Intent(MainActivity.this, HomeActivity.class));
                                     }
                                 }

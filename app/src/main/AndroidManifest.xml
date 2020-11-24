@@ -9,12 +9,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Tasket">
-        <activity android:name=".ViewTeam"></activity>
-        <activity android:name=".ViewTeams" />
-        <activity
-            android:name=".ScrollingActivity"
-            android:label="@string/title_activity_scrolling"
-            android:theme="@style/Theme.Tasket.NoActionBar" />
+        <activity android:name=".ForgotPasswordActivity"></activity>
+        <activity android:name=".ViewTaskActivity" />
         <activity android:name=".HomeActivity" />
         <activity android:name=".ViewTaskActivity" />
         <activity android:name=".LoginActivity" />
