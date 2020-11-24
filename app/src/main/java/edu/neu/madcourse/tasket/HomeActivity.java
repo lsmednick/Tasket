@@ -22,6 +22,7 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         btnLogout = findViewById(R.id.logout_btn);
+        Button viewTask = findViewById(R.id.viewTaskButton);
 
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -31,6 +32,14 @@ public class HomeActivity extends AppCompatActivity {
                 startActivity(intToMain);
                 Toast.makeText(HomeActivity.this, "You are logged out", Toast.LENGTH_SHORT).show();
 
+            }
+        });
+
+        viewTask.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(HomeActivity.this, ViewTaskActivity.class);
+                startActivity(i);
             }
         });
     }
