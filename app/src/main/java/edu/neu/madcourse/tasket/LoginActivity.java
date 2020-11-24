@@ -22,6 +22,7 @@ public class LoginActivity extends AppCompatActivity {
     Button btnSignIn;
     TextView tvSignUp;
     FirebaseAuth mFirebaseAuth;
+    Button forgotPass;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
 
     @Override
@@ -34,6 +35,7 @@ public class LoginActivity extends AppCompatActivity {
         password = findViewById(R.id.password);
         btnSignIn = findViewById(R.id.sign_in_btn);
         tvSignUp = findViewById(R.id.not_registered);
+        forgotPass = findViewById(R.id.forgot_pwd_btn);
 
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -97,6 +99,14 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intSignUp = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(intSignUp);
+            }
+        });
+
+        forgotPass.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(LoginActivity.this, ForgotPasswordActivity.class);
+                startActivity(i);
             }
         });
     }

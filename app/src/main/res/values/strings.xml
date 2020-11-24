@@ -11,5 +11,7 @@
     <string name="logout">Logout</string>
     <string name="already_registered">Already have an account? Sign in here.</string>
     <string name="not_registered">Not registered? Sign up here.</string>
+    <string name="forgot_password">Forgot password</string>
+    <string name="send_pass">Send my password</string>
 
 </resources>
