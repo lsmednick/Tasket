@@ -25,6 +25,7 @@ public class HomeActivity extends AppCompatActivity {
         btnLogout = findViewById(R.id.logout_btn);
         Button viewTask = findViewById(R.id.viewTaskButton);
 
+
         btnLogout.setOnClickListener(v -> {
             FirebaseAuth.getInstance().signOut();
             Intent intToMain = new Intent(HomeActivity.this, MainActivity.class);

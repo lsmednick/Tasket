@@ -6,22 +6,30 @@
     android:layout_height="match_parent"
     tools:context=".ViewTeams">
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/view_teams_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title_view"
+        tools:layout_constraintTop_toBottomOf="@id/title_view" />
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/addTeam"
+        android:id="@+id/view_teams_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fab_margin"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
         android:clickable="true"
-        android:theme="@style/Theme.Tasket"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@android:drawable/ic_input_add"
-        android:contentDescription="@string/team_fab_create_a_new_team" />
+        app:srcCompat="@android:drawable/ic_input_add" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/teamNameRecyclerView"
+    <TextView
+        android:id="@+id/title_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content"
+        android:text="Your Teams"
+        android:textSize="30sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

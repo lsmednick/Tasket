@@ -3,95 +3,37 @@ package edu.neu.madcourse.tasket;
 import java.util.ArrayList;
 
 public class Subteam {
-
-    private String subteamName;
-    private ArrayList<String> managers;
-    private ArrayList<String> members;
-    private ArrayList<String> tasks;
+    private final ArrayList<String> associated_members;
+    private final ArrayList<Permission> permissions;
+    //private ArrayList<Task> tasks;
+    private final String subteamName;
     private String pushID;
 
-    public Subteam(String name) {
-        subteamName = name;
-        managers = new ArrayList<>();
-        members = new ArrayList<>();
-        tasks = new ArrayList<>();
-    }
+    /**
+     * Default constructor.  Used to create empty subteam that will be populated by the user
+     */
+    public Subteam() {
+        this.associated_members = new ArrayList<>();
+        this.permissions = new ArrayList<>();
+        //this.tasks = new ArrayList<Task>();
+        this.subteamName = "";
 
-    public String getPushID() {
-        return this.pushID;
-    }
-
-    public void setPushID(String id) {
-        this.pushID = id;
     }
 
     /**
-     * Get, set, add, remove owner
-     * TODO add info to DB
+     * Existing subteam constructor.  Creates existing subteam object from information stored in DB
+     *
+     * @param members     ArrayList<String> member_username </String> representing all members of the subteam
+     * @param permissions ArrayList<Permission> permission objects </Permission> representing all permission levels of the subteam.
+     * @param name        String representing the name of the subteam
+     *                    //@param tasks       ArrayList<Task> task object </Task> represents all tasks associated with the subteam specifically
+     *                    TODO add when joined with task branch
      */
-
-    public ArrayList<String> getManagers() {
-        return this.managers;
+    public Subteam(ArrayList<String> members, ArrayList<Permission> permissions, String name) {
+        this.associated_members = members;
+        this.permissions = permissions;
+        this.subteamName = name;
+        //this.tasks = tasks;
     }
 
-    public void setManagers(ArrayList<String> list) {
-        this.managers = list;
-    }
-
-    public void addManager(String user) {
-        this.managers.add(user);
-    }
-
-    public void removeManager(String toDelete) {
-        this.managers.remove(toDelete);
-    }
-
-    /**
-     * Get, set, add, remove member
-     */
-
-    public ArrayList<String> getMembers() {
-        return this.members;
-    }
-
-    public void setMembers(ArrayList<String> list) {
-        this.members = list;
-    }
-
-    public void addMember(String newMember) {
-        this.members.add(newMember);
-    }
-
-    public void removeMember(String toDelete) {
-        this.members.remove(toDelete);
-    }
-
-    /**
-     * Get, set, add, remove tasks
-     */
-
-    public ArrayList<String> getTasks() {
-        return this.tasks;
-    }
-
-    public void setTasks(ArrayList<String> list) {
-        this.tasks = list;
-    }
-
-    public void addTask(String newTask) {
-        this.tasks.add(newTask);
-    }
-
-    public void removeTask(String toDelete) {
-        this.tasks.remove(toDelete);
-    }
-
-    public String getSubteamName() {
-        return this.subteamName;
-    }
-
-
-    public void setSubteamName(String newName) {
-        this.subteamName = newName;
-    }
 }

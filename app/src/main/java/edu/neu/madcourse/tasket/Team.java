@@ -1,127 +1,82 @@
 package edu.neu.madcourse.tasket;
 
-import android.util.Log;
-
-import com.bignerdranch.expandablerecyclerview.Model.ParentObject;
-
 import java.util.ArrayList;
-import java.util.List;
 
-public class Team implements ParentObject {
-
-    //private static final String TAG = Team.class.getSimpleName();
+public class Team {
+    private ArrayList<String> associated_members;
+    private ArrayList<Permission> permissions;
+    private ArrayList<Subteam> subteams;
     private String teamName;
-    private List<Object> subteamList;
-    private ArrayList<String> owners;
-    private ArrayList<String> members;
-    private ArrayList<String> tasks;
+    //private ArrayList<Task> tasks;
     private String pushID;
 
-
+    /**
+     * Default constructor.  Used to create new team instance that will later be populated
+     * and saved in the database.
+     */
     public Team() {
-
+        this.associated_members = new ArrayList<String>();
+        this.permissions = new ArrayList<Permission>();
+        this.subteams = new ArrayList<Subteam>();
+        this.teamName = "";
+        //this.tasks = new ArrayList<Task>();
     }
 
-    public Team(String name) {
+    /**
+     * Existing team constructor.  Creates existing team object from information stored in DB
+     *
+     * @param members     ArrayList<String> member_username </String> representing all members of the team
+     * @param permissions ArrayList<Permission> permission objects </Permission> representing all permission levels of the team.
+     * @param subteams    ArrayList<Subteam> subteam objects </Subteam> representing all subteams associated with the team
+     * @param name        String representing the name of the team
+     *                    //@param tasks       ArrayList<Task> task object </Task> represents all tasks associated with the team at large (not subteams)
+     *                    TODO to be added later
+     */
+    public Team(ArrayList<String> members, ArrayList<Permission> permissions, ArrayList<Subteam> subteams, String name) {
+        this.associated_members = members;
+        this.permissions = permissions;
+        this.subteams = subteams;
         this.teamName = name;
+        //this.tasks = tasks;
+    }
 
-        // initialize empty arrays
-        this.members = new ArrayList<>();
-        this.tasks = new ArrayList<>();
-        this.owners = new ArrayList<>();
+    public ArrayList<String> getAssociated_members() {
+        return associated_members;
+    }
 
+    public void setAssociated_members(ArrayList<String> associated_members) {
+        this.associated_members = associated_members;
+    }
+
+    public ArrayList<Permission> getPermissions() {
+        return permissions;
+    }
+
+    public void setPermissions(ArrayList<Permission> permissions) {
+        this.permissions = permissions;
+    }
+
+    public ArrayList<Subteam> getSubteams() {
+        return subteams;
+    }
+
+    public void setSubteams(ArrayList<Subteam> subteams) {
+        this.subteams = subteams;
     }
 
     public String getTeamName() {
         return teamName;
     }
 
-    public void setTeamName(String name) {
-        this.teamName = name;
+    public void setTeamName(String teamName) {
+        this.teamName = teamName;
     }
 
     public String getPushID() {
-        return this.pushID;
+        return pushID;
     }
 
-    public void setPushID(String id) {
-        this.pushID = id;
-    }
-
-
-    /**
-     * Get, set, add, remove owner
-     * TODO add info to DB
-     */
-
-    public ArrayList<String> getOwners() {
-        return this.owners;
-    }
-
-    public void setOwners(ArrayList<String> list) {
-        this.owners = list;
-    }
-
-    public void addOwner(String user) {
-        this.owners.add(user);
-    }
-
-    public void removeOwner(String toDelete) {
-        this.owners.remove(toDelete);
-    }
-
-    /**
-     * Get, set, add, remove member
-     */
-
-    public ArrayList<String> getMembers() {
-        return this.members;
-    }
-
-    public void setMembers(ArrayList<String> list) {
-        this.members = list;
-    }
-
-    public void addMember(String newMember) {
-        this.members.add(newMember);
-    }
-
-    public void removeMember(String toDelete) {
-        this.members.remove(toDelete);
-    }
-
-    /**
-     * Get, set, add, remove tasks
-     */
-
-    public ArrayList<String> getTasks() {
-        return this.tasks;
-    }
-
-    public void setTasks(ArrayList<String> list) {
-        this.tasks = list;
-    }
-
-    public void addTask(String newTask) {
-        this.tasks.add(newTask);
-    }
-
-    public void removeTask(String toDelete) {
-        this.tasks.remove(toDelete);
-    }
-
-    public void removeSubteam(String name) {
-        //TODO remove subteam object from list
-    }
-
-    @Override
-    public List<Object> getChildObjectList() {
-        return subteamList;
-    }
-
-    @Override
-    public void setChildObjectList(List<Object> list) {
-        subteamList = list;
-        //Log.i(TAG, "list added");
+    public void setPushID(String pushID) {
+        this.pushID = pushID;
     }
 }

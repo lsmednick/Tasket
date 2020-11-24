@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/view_team_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/blue_2"
+            android:text="  TextView"
+            android:textColor="#FFFFFF"
+            android:textSize="36sp" />
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/ViewTeamTabLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:tabBackground="@color/blue_2"
+            app:tabGravity="start">
+
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/ViewTeamTaskTab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tasks" />
+
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/ViewTeamSubteamTab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Subteams" />
+
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/ViewTeamMemberTab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Members" />
+
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/ViewTeamPermissionTab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Permissions" />
+
+        </com.google.android.material.tabs.TabLayout>
+
+        <androidx.viewpager.widget.ViewPager
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/ViewTeamViewPager" />
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
