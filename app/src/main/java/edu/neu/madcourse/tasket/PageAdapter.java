@@ -1,5 +1,7 @@
 package edu.neu.madcourse.tasket;
 
+import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -7,31 +9,48 @@ import androidx.fragment.app.FragmentPagerAdapter;
 
 public class PageAdapter extends FragmentPagerAdapter {
     private final int numTabs;
+    private final String key;
+    private final String teamType;
 
-    public PageAdapter(@NonNull FragmentManager fm, int numOfTabs) {
+    public PageAdapter(@NonNull FragmentManager fm, int numOfTabs, String key, String teamType) {
         super(fm);
         this.numTabs = numOfTabs;
+        this.key = key;
+        this.teamType = teamType;
     }
 
     @NonNull
     @Override
     public Fragment getItem(int position) {
+        Fragment myFrag;
+        Bundle myBundle = new Bundle();
+        myBundle.putString("KEY", this.key);
+        myBundle.putString("TYPE", this.teamType);
+
         switch (position) {
             case 0:
-                return new tabTask();
+                myFrag = new tabTask();
+                break;
 
             case 1:
-                return new tabSubteam();
+                myFrag = new tabSubteam();
+                break;
 
             case 2:
-                return new tabMember();
+                myFrag = new tabMember();
+                break;
 
             case 3:
-                return new tabPermission();
+                myFrag = new tabPermission();
+                break;
 
             default:
-                return null;
+                myFrag = null;
         }
+        if (myFrag != null) {
+            myFrag.setArguments(myBundle);
+        }
+        return myFrag;
     }
 
     @Override

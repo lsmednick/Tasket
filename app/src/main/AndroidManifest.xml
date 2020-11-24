@@ -12,6 +12,8 @@
         <activity android:name=".ForgotPasswordActivity"></activity>
         <activity android:name=".ViewTaskActivity" />
         <activity android:name=".HomeActivity" />
+        <activity android:name=".ViewTeams" />
+        <activity android:name=".ViewTeam" />
         <activity android:name=".ViewTaskActivity" />
         <activity android:name=".LoginActivity" />
         <activity android:name=".MainActivity">

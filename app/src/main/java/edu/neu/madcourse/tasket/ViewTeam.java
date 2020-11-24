@@ -51,7 +51,7 @@ public class ViewTeam extends AppCompatActivity {
         viewPager = findViewById(R.id.ViewTeamViewPager);
 
 
-        pageAdapter = new PageAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
+        pageAdapter = new PageAdapter(getSupportFragmentManager(), tabLayout.getTabCount(), teamKey, "team");
         viewPager.setAdapter(pageAdapter);
 
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -123,6 +123,7 @@ public class ViewTeam extends AppCompatActivity {
     }
 
     public void setName(String name) {
+        name = "  " + name;
         this.teamName.setText(name);
     }
 

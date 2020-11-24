@@ -15,8 +15,8 @@ import java.util.ArrayList;
 import java.util.Map;
 
 public class SimpleStringAdapter extends RecyclerView.Adapter<SimpleStringAdapter.SimpleViewHolder> {
-    private final ArrayList<String> mydata;
-    private final Map<String, String> dataMap;
+    private final ArrayList<String> mydata;  // <teamName>
+    private final Map<String, String> dataMap;  // <teamName, key>
     private final Activity thisActivity;
     private final Class newActivity;
 

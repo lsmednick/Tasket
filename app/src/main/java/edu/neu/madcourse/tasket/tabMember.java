@@ -7,6 +7,9 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
+import java.util.zip.Inflater;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -17,8 +20,8 @@ public class tabMember extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static final String ARG_PARAM1 = "KEY";
+    private static final String ARG_PARAM2 = "TYPE";
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -26,6 +29,7 @@ public class tabMember extends Fragment {
 
     public tabMember() {
         // Required empty public constructor
+
     }
 
     /**
@@ -52,6 +56,7 @@ public class tabMember extends Fragment {
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
+
         }
     }
 
@@ -59,6 +64,10 @@ public class tabMember extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_tab_member, container, false);
+        View myinflater = inflater.inflate(R.layout.fragment_tab_member, container, false);
+        TextView tv = myinflater.findViewById(R.id.tab_member_text_view);
+        tv.setText(mParam1);
+        //TODO set up recycler view h and populate with members from team associated with that key
+        return myinflater;
     }
 }
