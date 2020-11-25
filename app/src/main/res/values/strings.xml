@@ -9,7 +9,7 @@
     <string name="sign_up">Sign Up</string>
     <string name="sign_in">Sign In</string>
     <string name="logout">Logout</string>
-    <string name="already_registered">Already have an account? Sign in here.</string>
+    <string name="already_registered">Already have an account? Log in here.</string>
     <string name="not_registered">Not registered? Sign up here.</string>
     <string name="title_activity_view_teams">ViewTeams</string>
     <!-- Strings used for fragments for navigation -->
@@ -120,5 +120,9 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="forgot_password">Forgot password</string>
     <string name="send_pass">Send my password</string>
+    <string name="register">Register</string>
+    <string name="login">Login</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>
