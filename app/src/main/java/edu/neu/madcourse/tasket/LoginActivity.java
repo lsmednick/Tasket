@@ -10,13 +10,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,7 +27,6 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -210,7 +207,7 @@ public class LoginActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             FirebaseUser user = mAuth.getCurrentUser();
                             // user is logged in, so start LoginActivity
-                            startActivity(new Intent(LoginActivity.this, ProfileActivity.class));
+                            startActivity(new Intent(LoginActivity.this, DashboardActivity.class));
                             finish();
 
                         } else {
@@ -265,30 +262,35 @@ public class LoginActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
 
                             FirebaseUser user = mAuth.getCurrentUser();
-                            // Get user email and uid from auth
-                            String email = user.getEmail();
-                            String uid = user.getUid();
 
-                            // When user is registered store user info in firebase realtime database as well,
-                            // using HashMap
-                            HashMap<Object, String> hashMap = new HashMap<>();
+                            // if user is signing in for the first time, then get and show user info
+                            // from google account.
+                            if (task.getResult().getAdditionalUserInfo().isNewUser()) {
+                                // Get user email and uid from auth
+                                String email = user.getEmail();
+                                String uid = user.getUid();
 
-                            // put info in hashmap
-                            hashMap.put("email", email);
-                            hashMap.put("uid", uid);
-                            hashMap.put("name", "");
-                            hashMap.put("phone", "");
-                            hashMap.put("image", "");
-                            // firebase database instance
-                            FirebaseDatabase database = FirebaseDatabase.getInstance();
-                            // path to store user data named "Users
-                            DatabaseReference reference = database.getReference("Users");
-                            // put data within hashmap in database
-                            reference.child(uid).setValue(hashMap);
+                                // When user is registered store user info in firebase realtime database as well,
+                                // using HashMap
+                                HashMap<Object, String> hashMap = new HashMap<>();
 
+                                // put info in hashmap
+                                hashMap.put("email", email);
+                                hashMap.put("uid", uid);
+                                hashMap.put("name", "");
+                                hashMap.put("phone", "");
+                                hashMap.put("image", "");
+                                // firebase database instance
+                                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                                // path to store user data named "Users
+                                DatabaseReference reference = database.getReference("Users");
+                                // put data within hashmap in database
+                                reference.child(uid).setValue(hashMap);
+
+                            }
                             // show user email in toast
                             Toast.makeText(LoginActivity.this, ""+user.getEmail(), Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(LoginActivity.this, ProfileActivity.class));
+                            startActivity(new Intent(LoginActivity.this, DashboardActivity.class));
                             finish();
                             // updateUI(user);
                         } else {
