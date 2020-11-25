@@ -27,6 +27,13 @@ public class SimpleStringAdapter extends RecyclerView.Adapter<SimpleStringAdapte
         this.newActivity = newActivity;
     }
 
+    public SimpleStringAdapter(ArrayList<String> data) {
+        dataMap = null;
+        mydata = data;
+        thisActivity = null;
+        this.newActivity = null;
+    }
+
 
     @NonNull
     @Override
@@ -41,12 +48,14 @@ public class SimpleStringAdapter extends RecyclerView.Adapter<SimpleStringAdapte
         String data = mydata.get(position);
         holder.textView.setText(data);
         holder.textView.setOnClickListener(v -> {
-            String key = dataMap.get(data);
-            //TODO start activity ViewTeam and pass along key
-            Toast.makeText(v.getContext(), "CLICKED", Toast.LENGTH_LONG).show();
-            Intent to_view_team = new Intent(thisActivity, this.newActivity);
-            to_view_team.putExtra("MESSAGE_KEY", key);
-            thisActivity.startActivity(to_view_team);
+            if (dataMap != null) {
+                String key = dataMap.get(data);
+                //TODO start activity ViewTeam and pass along key
+                Toast.makeText(v.getContext(), "CLICKED", Toast.LENGTH_LONG).show();
+                Intent to_view_team = new Intent(thisActivity, this.newActivity);
+                to_view_team.putExtra("MESSAGE_KEY", key);
+                thisActivity.startActivity(to_view_team);
+            }
         });
     }
 

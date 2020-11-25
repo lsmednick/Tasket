@@ -2,13 +2,23 @@ package edu.neu.madcourse.tasket;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
 import java.util.zip.Inflater;
 
 /**
@@ -26,6 +36,9 @@ public class tabMember extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private FirebaseDatabase database;
+    private View myInflater;
 
     public tabMember() {
         // Required empty public constructor
@@ -63,11 +76,43 @@ public class tabMember extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View myinflater = inflater.inflate(R.layout.fragment_tab_member, container, false);
-        TextView tv = myinflater.findViewById(R.id.tab_member_text_view);
-        tv.setText(mParam1);
-        //TODO set up recycler view h and populate with members from team associated with that key
-        return myinflater;
+
+        this.database = FirebaseDatabase.getInstance();
+
+        this.myInflater = inflater.inflate(R.layout.fragment_tab_member, container, false);
+
+        getMembers();
+
+        return myInflater;
+    }
+
+    public void getMembers() {
+        ArrayList<String> memberList = new ArrayList<>();
+        DatabaseReference myRef = this.database.getReference("teams/" + mParam1);
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot postSnap : snapshot.getChildren()) {
+                    System.out.println("KEY: " + postSnap.getKey() + " VALUE: " + postSnap.getValue() + " TYPE: " + postSnap.getValue().getClass());
+                    if (postSnap.getKey().equals("associated_members")) {
+                        memberList.addAll((ArrayList<String>) postSnap.getValue());
+
+                    }
+                }
+                setRecycler(memberList);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    public void setRecycler(ArrayList<String> myMembers) {
+        System.out.println(myMembers);
+        RecyclerView memberRecycler = myInflater.findViewById(R.id.fragment_recycler);
+        memberRecycler.setLayoutManager(new LinearLayoutManager(this.getContext(), LinearLayoutManager.VERTICAL, false));
+        memberRecycler.setAdapter(new SimpleStringAdapter(myMembers));
     }
 }

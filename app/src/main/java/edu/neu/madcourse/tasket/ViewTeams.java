@@ -56,7 +56,7 @@ public class ViewTeams extends AppCompatActivity {
         System.out.println("USER KEY:" + userKey);
 
         //get list of all teams for user
-        DatabaseReference userTeams = database.getReference("users/" + userKey);
+        DatabaseReference userTeams = database.getReference("Users/" + userKey);
         HashMap<String, String> teamMap = new HashMap<>();
         ArrayList<String> teamKeys = new ArrayList<>();
         userTeams.addValueEventListener(new ValueEventListener() {
@@ -146,7 +146,7 @@ public class ViewTeams extends AppCompatActivity {
         key.setValue(tempTeam);
 
         //add team to user's teams
-        DatabaseReference userTeams = database.getReference("users/" + mAuth.getUid() + "/teams");
+        DatabaseReference userTeams = database.getReference("Users/" + mAuth.getUid() + "/teams");
         userTeams.push().setValue(pushID);
 
     }
