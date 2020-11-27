@@ -347,7 +347,7 @@ public class ProfileFragment extends Fragment {
 
             }
         });
-        builder.setNegativeButton("Update", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
