@@ -1,8 +1,10 @@
 package edu.neu.madcourse.tasket;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -10,8 +12,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -34,11 +38,13 @@ public class tabMember extends Fragment {
     private static final String ARG_PARAM2 = "TYPE";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private String key;
+    private String type;
 
     private FirebaseDatabase database;
     private View myInflater;
+    private SimpleStringAdapter myAdapter;
+    private ArrayList<String> memberList;
 
     public tabMember() {
         // Required empty public constructor
@@ -67,8 +73,8 @@ public class tabMember extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            this.key = getArguments().getString(ARG_PARAM1);
+            this.type = getArguments().getString(ARG_PARAM2);
 
         }
     }
@@ -83,19 +89,93 @@ public class tabMember extends Fragment {
 
         getMembers();
 
+        FloatingActionButton fab = this.myInflater.findViewById(R.id.floatingActionButton_add_member);
+        fab.setOnClickListener(v -> {
+            //pop up dialog with text entry
+            AlertDialog.Builder alert = new AlertDialog.Builder(this.getContext());
+
+            alert.setTitle("Add Member");
+            alert.setMessage("Enter the username of the member you'd like to add below");
+
+            // Set an EditText view to get user input
+            final EditText input = new EditText(this.getContext());
+            alert.setView(input);
+
+            alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int whichButton) {
+                    String newMember = input.getText().toString();
+                    addMember(newMember);
+                }
+            });
+
+            alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int whichButton) {
+                    // Canceled.
+                }
+            });
+
+            alert.show();
+        });
+
+
         return myInflater;
+    }
+
+    public void addMember(String newMember) {
+        this.memberList.clear();
+        this.memberList.add(newMember);
+        this.memberList.clear();
+
+        //add under team
+        DatabaseReference myref = this.database.getReference(this.type + "/" + this.key + "/associated_members");
+        myref.child(newMember).setValue(true);
+
+        //add team to user
+        //TODO determine if we are creating usernames or using emails to add other users to a team/task
+        //TODO determine if we should store the user variables using the email, username, or by unique ID within the teams and subteams
+
+        //get unique key for new user
+        DatabaseReference userRef = this.database.getReference("Users");
+        userRef.addValueEventListener(new ValueEventListener() {
+            final String myKey = key;
+
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                boolean flag = false;
+                for (DataSnapshot postSnap : snapshot.getChildren()) {
+                    if (postSnap.getValue() == newMember) {
+                        postSnap.getRef().child("teams").setValue(true);
+                        flag = true;
+                    }
+                }
+                if (!flag) {
+                    //TODO don't allow adding the member to team
+                    // maybe there's a way to make this a transaction?
+                    // add team to member, add member to team
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        //this.myAdapter.notifyItemInserted(this.memberList.size()-1);
+
     }
 
     public void getMembers() {
         ArrayList<String> memberList = new ArrayList<>();
-        DatabaseReference myRef = this.database.getReference("teams/" + mParam1);
+        DatabaseReference myRef = this.database.getReference(this.type + "/" + this.key);
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot postSnap : snapshot.getChildren()) {
-                    System.out.println("KEY: " + postSnap.getKey() + " VALUE: " + postSnap.getValue() + " TYPE: " + postSnap.getValue().getClass());
                     if (postSnap.getKey().equals("associated_members")) {
-                        memberList.addAll((ArrayList<String>) postSnap.getValue());
+                        for (DataSnapshot snap : postSnap.getChildren()) {
+                            memberList.add(snap.getKey());
+                        }
 
                     }
                 }
@@ -110,9 +190,10 @@ public class tabMember extends Fragment {
     }
 
     public void setRecycler(ArrayList<String> myMembers) {
-        System.out.println(myMembers);
+        this.memberList = myMembers;
         RecyclerView memberRecycler = myInflater.findViewById(R.id.fragment_recycler);
         memberRecycler.setLayoutManager(new LinearLayoutManager(this.getContext(), LinearLayoutManager.VERTICAL, false));
-        memberRecycler.setAdapter(new SimpleStringAdapter(myMembers));
+        this.myAdapter = new SimpleStringAdapter(myMembers);
+        memberRecycler.setAdapter(this.myAdapter);
     }
 }

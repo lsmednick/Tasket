@@ -3,6 +3,7 @@ package edu.neu.madcourse.tasket;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -82,8 +83,8 @@ public class ProfileFragment extends Fragment {
 
     // arrays of permissions to be requested
 
-    String cameraPermissions[];
-    String storagePermissions[];
+    String[] cameraPermissions;
+    String[] storagePermissions;
 
     // uri of picked image
     Uri image_uri;
@@ -257,7 +258,7 @@ public class ProfileFragment extends Fragment {
         // edit phone
 
         // options to show in dialog
-        String options[] = {"Edit Profile Picture", "Edit Cover Photo", "Edit Name", "Edit Phone"};
+        String[] options = {"Edit Profile Picture", "Edit Cover Photo", "Edit Name", "Edit Phone"};
         // alert dialog
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         // set title
@@ -360,7 +361,7 @@ public class ProfileFragment extends Fragment {
     private void showImagePicDialog() {
         // show dialog containing optuions Camera and Gallery to pick the image
         // options to show in dialog
-        String options[] = {"Camera", "Gallery"};
+        String[] options = {"Camera", "Gallery"};
         // alert dialog
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         // set title
@@ -402,7 +403,7 @@ public class ProfileFragment extends Fragment {
 
         switch (requestCode) {
             case CAMERA_REQUEST_CODE: {
-                if (grantResults.length > 0) {
+                if (grantResults.length > 1) {
                     boolean cameraAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
                     boolean writeStorageAccepted = grantResults[1] == PackageManager.PERMISSION_GRANTED;
                     if (cameraAccepted && writeStorageAccepted) {
@@ -435,6 +436,7 @@ public class ProfileFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK){
 
             if (requestCode == IMAGE_PICK_GALLERY_CODE) {
@@ -451,7 +453,7 @@ public class ProfileFragment extends Fragment {
 
             }
         }
-        super.onActivityResult(requestCode, resultCode, data);
+
     }
 
     private void uploadProfileCoverPhoto(Uri uri) {

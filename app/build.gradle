@@ -65,7 +65,7 @@ dependencies {
 
     // supports chip groups
     implementation 'androidx.appcompat:appcompat:1.3.0-alpha02'
-    implementation 'com.google.android.material:material:1.3.0-alpha03'
+    implementation 'com.google.android.material:material:1.3.0-alpha04'
 
     // supports database
     implementation platform('com.google.firebase:firebase-bom:26.1.0')

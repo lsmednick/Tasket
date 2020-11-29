@@ -7,6 +7,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
+import com.google.android.material.tabs.TabLayout;
+
 public class PageAdapter extends FragmentPagerAdapter {
     private final int numTabs;
     private final String key;
@@ -26,6 +28,13 @@ public class PageAdapter extends FragmentPagerAdapter {
         Bundle myBundle = new Bundle();
         myBundle.putString("KEY", this.key);
         myBundle.putString("TYPE", this.teamType);
+
+        // skip subteams if in subteam view
+        if (teamType.equals("subteams")) {
+            if (position > 0) {
+                position++;
+            }
+        }
 
         switch (position) {
             case 0:
@@ -62,4 +71,6 @@ public class PageAdapter extends FragmentPagerAdapter {
     public int getItemPosition(@NonNull Object object) {
         return POSITION_NONE;
     }
+
+
 }

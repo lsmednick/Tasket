@@ -40,7 +40,9 @@ public class SimpleStringAdapter extends RecyclerView.Adapter<SimpleStringAdapte
     public SimpleViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         View listItem = layoutInflater.inflate(R.layout.simple_text_row, parent, false);
-        return new SimpleViewHolder(listItem);
+        SimpleViewHolder myHolder = new SimpleViewHolder(listItem);
+        myHolder.setIsRecyclable(false);
+        return myHolder;
     }
 
     @Override
@@ -49,11 +51,19 @@ public class SimpleStringAdapter extends RecyclerView.Adapter<SimpleStringAdapte
         holder.textView.setText(data);
         holder.textView.setOnClickListener(v -> {
             if (dataMap != null) {
+
+                // sends existing team's key, teamName, and type to ViewTeam
                 String key = dataMap.get(data);
                 //TODO start activity ViewTeam and pass along key
                 Toast.makeText(v.getContext(), "CLICKED", Toast.LENGTH_LONG).show();
                 Intent to_view_team = new Intent(thisActivity, this.newActivity);
-                to_view_team.putExtra("MESSAGE_KEY", key);
+                String teamType = "subteams";
+                if (this.thisActivity.getClass() == ViewTeams.class) {
+                    teamType = "teams";
+                }
+
+                to_view_team.putExtra("TEAM_KEY", key);
+                to_view_team.putExtra("TEAM_TYPE", teamType);
                 thisActivity.startActivity(to_view_team);
             }
         });
