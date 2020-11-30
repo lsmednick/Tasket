@@ -41,7 +41,7 @@
         app:srcCompat="@drawable/bub" />
 
     <ImageView
-        android:id="@+id/taskImage"
+        android:id="@+id/editTaskImage"
         android:layout_width="87dp"
         android:layout_height="75dp"
         android:layout_marginStart="4dp"
@@ -195,11 +195,9 @@
         android:layout_width="378dp"
         android:layout_height="147dp"
         android:padding="8dp"
-        app:layout_constraintBottom_toBottomOf="@+id/imageButton2"
         app:layout_constraintEnd_toEndOf="@+id/imageView19"
         app:layout_constraintStart_toStartOf="@+id/imageView19"
         app:layout_constraintTop_toBottomOf="@+id/collaborators"
-        app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/bub"
         app:tint="#FFFFFF" />
 
@@ -237,18 +235,6 @@
         app:layout_constraintStart_toStartOf="@+id/imageView15"
         app:layout_constraintTop_toTopOf="@+id/imageView15" />
 
-    <ImageButton
-        android:id="@+id/imageButton2"
-        android:layout_width="36dp"
-        android:layout_height="28dp"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView19"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/collaborators"
-        app:layout_constraintVertical_bias="0.9"
-        app:srcCompat="@android:drawable/arrow_down_float" />
-
     <Button
         android:id="@+id/saveButton"
         android:layout_width="150dp"
@@ -273,18 +259,6 @@
         app:layout_constraintTop_toTopOf="@+id/imageView7"
         app:layout_constraintVertical_bias="0.0" />
 
-    <ImageButton
-        android:id="@+id/imageButton"
-        android:layout_width="36dp"
-        android:layout_height="28dp"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView18"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/categories"
-        app:layout_constraintVertical_bias="0.82"
-        app:srcCompat="@android:drawable/arrow_down_float" />
-
     <CheckBox
         android:id="@+id/finishedBox"
         android:layout_width="125dp"
@@ -299,5 +273,50 @@
         app:layout_constraintStart_toEndOf="@+id/taskName"
         app:layout_constraintTop_toTopOf="@+id/taskName"
         app:layout_constraintVertical_bias="0.0" />
+
+    <com.google.android.material.chip.ChipGroup
+        android:layout_width="359dp"
+        android:layout_height="50dp"
+        app:selectionRequired="true"
+        app:singleSelection="true"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView17"
+        app:layout_constraintEnd_toEndOf="@+id/imageView22"
+        app:layout_constraintHorizontal_bias="0.45"
+        app:layout_constraintStart_toStartOf="@+id/imageView22"
+        app:layout_constraintTop_toTopOf="@+id/imageView22">
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/viewLow"
+            android:layout_width="109dp"
+            android:layout_height="47dp"
+            android:layout_marginStart="8dp"
+            android:checkable="true"
+            android:checked="true"
+            android:text="Low"
+            app:chipIcon="@android:drawable/presence_online"
+            app:chipIconTint="@color/green_3" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/viewMed"
+            android:layout_width="109dp"
+            android:layout_height="47dp"
+            android:checkable="true"
+            android:checked="false"
+            android:text="Medium"
+            app:chipIcon="@android:drawable/presence_online"
+            app:chipIconTint="#FFE92B" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/viewHigh"
+            android:layout_width="109dp"
+            android:layout_height="47dp"
+            android:layout_marginEnd="12dp"
+            android:checkable="true"
+            android:checked="false"
+            android:text="High"
+            app:chipIcon="@android:drawable/presence_online"
+            app:chipIconTint="#E91E63" />
+
+    </com.google.android.material.chip.ChipGroup>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

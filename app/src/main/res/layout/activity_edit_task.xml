@@ -7,11 +7,24 @@
     tools:context=".ViewTaskActivity">
 
     <ImageButton
-        android:id="@+id/edit_deadline_button2"
+        android:id="@+id/editName"
+        android:layout_width="47dp"
+        android:layout_height="26dp"
+        app:layout_constraintBottom_toBottomOf="@+id/editTaskName"
+        app:layout_constraintEnd_toStartOf="@+id/button"
+        app:layout_constraintHorizontal_bias="0.014"
+        app:layout_constraintStart_toEndOf="@+id/editTaskName"
+        app:layout_constraintTop_toTopOf="@+id/editTaskName"
+        app:layout_constraintVertical_bias="1.0"
+        app:srcCompat="@drawable/ic_edit_white"
+        app:tint="#FFFFFF" />
+
+    <ImageButton
+        android:id="@+id/editTaskType"
         android:layout_width="47dp"
         android:layout_height="26dp"
         app:layout_constraintBottom_toBottomOf="@+id/taskType"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/button"
         app:layout_constraintHorizontal_bias="0.023"
         app:layout_constraintStart_toEndOf="@+id/taskType"
         app:layout_constraintTop_toTopOf="@+id/taskType"
@@ -19,11 +32,11 @@
         app:srcCompat="@drawable/ic_edit_white"
         app:tint="#FFFFFF" />
 
-    <EditText
+    <TextView
         android:id="@+id/editTaskName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TaskName"
+        android:text="Task Name"
         android:textColor="#000000"
         android:textSize="24sp"
         android:textStyle="bold"
@@ -32,7 +45,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/taskType"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="0.815" />
 
     <ImageView
         android:id="@+id/imageView19"
@@ -69,7 +82,7 @@
         app:srcCompat="@drawable/bub" />
 
     <ImageView
-        android:id="@+id/taskImage"
+        android:id="@+id/editTaskImage"
         android:layout_width="87dp"
         android:layout_height="75dp"
         android:layout_marginStart="4dp"
@@ -130,6 +143,17 @@
         app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/ic_tasketbubble" />
 
+    <ImageButton
+        android:id="@+id/edit_collaborators"
+        android:layout_width="47dp"
+        android:layout_height="26dp"
+        app:layout_constraintBottom_toBottomOf="@+id/collaborators"
+        app:layout_constraintStart_toEndOf="@+id/collaborators"
+        app:layout_constraintTop_toTopOf="@+id/collaborators"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/ic_edit_white"
+        app:tint="#2A82FF" />
+
     <ImageView
         android:id="@+id/imageView14"
         android:layout_width="109dp"
@@ -161,7 +185,6 @@
         android:id="@+id/month"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="month"
         app:layout_constraintBottom_toBottomOf="@+id/imageView14"
         app:layout_constraintEnd_toEndOf="@+id/imageView14"
         app:layout_constraintStart_toStartOf="@+id/imageView14"
@@ -175,6 +198,7 @@
         android:textColor="#FFFFFF"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.427"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/imageView19" />
 
@@ -207,11 +231,9 @@
         android:layout_width="378dp"
         android:layout_height="147dp"
         android:padding="8dp"
-        app:layout_constraintBottom_toBottomOf="@+id/imageButton2"
         app:layout_constraintEnd_toEndOf="@+id/imageView19"
         app:layout_constraintStart_toStartOf="@+id/imageView19"
         app:layout_constraintTop_toBottomOf="@+id/collaborators"
-        app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/bub"
         app:tint="#FFFFFF" />
 
@@ -231,7 +253,6 @@
         android:id="@+id/date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="date"
         app:layout_constraintBottom_toBottomOf="@+id/imageView7"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
@@ -243,23 +264,10 @@
         android:id="@+id/year"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="year"
         app:layout_constraintBottom_toBottomOf="@+id/imageView15"
         app:layout_constraintEnd_toEndOf="@+id/imageView15"
         app:layout_constraintStart_toStartOf="@+id/imageView15"
         app:layout_constraintTop_toTopOf="@+id/imageView15" />
-
-    <ImageButton
-        android:id="@+id/imageButton2"
-        android:layout_width="36dp"
-        android:layout_height="28dp"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView19"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/collaborators"
-        app:layout_constraintVertical_bias="0.9"
-        app:srcCompat="@android:drawable/arrow_down_float" />
 
     <Button
         android:id="@+id/saveButton"
@@ -300,27 +308,17 @@
         app:srcCompat="@drawable/ic_edit_white"
         app:tint="#2A82FF" />
 
-    <ImageButton
-        android:id="@+id/imageButton"
-        android:layout_width="36dp"
-        android:layout_height="28dp"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView18"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/categories"
-        app:layout_constraintVertical_bias="0.82"
-        app:srcCompat="@android:drawable/arrow_down_float" />
-
     <com.google.android.material.chip.ChipGroup
+        android:id="@+id/editChipGroup"
         android:layout_width="359dp"
         android:layout_height="50dp"
-        app:selectionRequired="true"
         app:layout_constraintBottom_toBottomOf="@+id/imageView17"
         app:layout_constraintEnd_toEndOf="@+id/imageView22"
         app:layout_constraintHorizontal_bias="0.45"
         app:layout_constraintStart_toStartOf="@+id/imageView22"
-        app:layout_constraintTop_toTopOf="@+id/imageView22">
+        app:layout_constraintTop_toTopOf="@+id/imageView22"
+        app:selectionRequired="true"
+        app:singleSelection="true">
 
         <com.google.android.material.chip.Chip
             android:id="@+id/editLow"
@@ -328,7 +326,7 @@
             android:layout_height="47dp"
             android:layout_marginStart="8dp"
             android:checkable="true"
-            android:checked="false"
+            android:checked="true"
             android:text="Low"
             app:chipIcon="@android:drawable/presence_online"
             app:chipIconTint="@color/green_3" />
@@ -355,5 +353,17 @@
             app:chipIconTint="#E91E63" />
 
     </com.google.android.material.chip.ChipGroup>
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="85dp"
+        android:layout_height="70dp"
+        android:layout_marginEnd="16dp"
+        android:text="Upload Photo"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@+id/taskType"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/editTaskName"
+        app:layout_constraintVertical_bias="1.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

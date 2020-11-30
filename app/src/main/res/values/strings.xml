@@ -123,6 +123,8 @@
     <string name="register">Register</string>
     <string name="login">Login</string>
     <string name="todo">todo</string>
+    <string name="todotask">To-Do</string>
+    <string name="hourlyTask">Hourly</string>
     <!-- TODO: Remove or change this placeholder text -->
 
 

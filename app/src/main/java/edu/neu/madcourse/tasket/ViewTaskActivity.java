@@ -11,7 +11,7 @@ public class ViewTaskActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_task);
-        ImageView taskImage = findViewById(R.id.taskImage);
+        ImageView taskImage = findViewById(R.id.editTaskImage);
         taskImage.setImageResource(R.drawable.common_google_signin_btn_icon_dark_focused);
         //taskImage.
     }
