@@ -5,13 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="40dp"
-    tools:context=".LoginActivity">
+    tools:context=".RegisterActivity">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAlignment="center"
-        android:text="@string/login"
+        android:text="@string/register"
         android:textStyle="bold"
         android:textColor="@color/blue_3"
         android:textSize="25sp"/>
@@ -49,46 +49,23 @@
 
     <!-- Register user button -->
     <Button
-        android:id="@+id/loginBtn"
-        android:text="@string/login"
+        android:id="@+id/registerBtn"
+        android:text="@string/register"
         android:layout_below="@+id/passwordTIL"
         android:layout_centerHorizontal="true"
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
-    <!-- android:drawableLeft="@drawable/..." -->
 
-    <!-- Click to recover password -->
+    <!-- Click to go to LoginActivity -->
     <TextView
-        android:id="@+id/recoverPassTv"
+        android:id="@+id/have_accountTv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:text="@string/already_registered"
         android:textAlignment="center"
-        android:text="@string/forgot_password"
-        android:layout_below="@+id/loginBtn"/>
-
-    <!-- Sign in with google account -->
-    <com.google.android.gms.common.SignInButton
-        android:id="@+id/googleLoginBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/recoverPassTv"
-        />
-
-
-
-    <!-- Click to go to RegisterActivity -->
-    <TextView
-        android:id="@+id/nothave_accountTv"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/not_registered"
-        android:layout_alignParentBottom="true"
-        android:textAlignment="center"
-        android:layout_marginTop="30dp"
-        android:layout_marginBottom="20dp"/>
-    <!-- android:textColor="@color/colorBlack" -->
-
+        android:layout_below="@id/registerBtn"
+        android:layout_marginTop="30dp" />
+        <!-- android:textColor="@color/colorBlack" -->
 
 </RelativeLayout>
