@@ -9,12 +9,12 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 public class HomeActivity extends AppCompatActivity {
 
     Button btnLogout;
     Button btnViewTeams;
+    Button btnViewTasks;
     FirebaseAuth mFirebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
 
@@ -47,5 +47,6 @@ public class HomeActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
+
     }
 }

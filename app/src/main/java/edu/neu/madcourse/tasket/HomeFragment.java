@@ -69,6 +69,12 @@ public class HomeFragment extends Fragment {
             startActivity(intent);
         });
 
+        Button to_tasks = myInflater.findViewById(R.id.view_tasks_button);
+        to_tasks.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), ViewTasksActivity.class);
+            startActivity(intent);
+        });
+
         return myInflater;
     }
 }

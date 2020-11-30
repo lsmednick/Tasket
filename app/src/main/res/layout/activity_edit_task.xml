@@ -6,6 +6,34 @@
     android:layout_height="match_parent"
     tools:context=".ViewTaskActivity">
 
+    <ImageButton
+        android:id="@+id/edit_deadline_button2"
+        android:layout_width="47dp"
+        android:layout_height="26dp"
+        app:layout_constraintBottom_toBottomOf="@+id/taskType"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.023"
+        app:layout_constraintStart_toEndOf="@+id/taskType"
+        app:layout_constraintTop_toTopOf="@+id/taskType"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/ic_edit_white"
+        app:tint="#FFFFFF" />
+
+    <EditText
+        android:id="@+id/editTaskName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TaskName"
+        android:textColor="#000000"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/taskType"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/taskType"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
+
     <ImageView
         android:id="@+id/imageView19"
         android:layout_width="380dp"
@@ -46,8 +74,7 @@
         android:layout_height="75dp"
         android:layout_marginStart="4dp"
         app:layout_constraintBottom_toTopOf="@+id/deadline"
-        app:layout_constraintEnd_toStartOf="@+id/taskName"
-        app:layout_constraintHorizontal_bias="0.555"
+        app:layout_constraintEnd_toStartOf="@+id/editTaskName"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.692"
@@ -57,7 +84,7 @@
         android:id="@+id/taskType"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Type"
+        android:text="To-Do"
         android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/imageView7"
         app:layout_constraintEnd_toEndOf="parent"
@@ -65,21 +92,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.753" />
-
-    <TextView
-        android:id="@+id/taskName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TaskName"
-        android:textColor="#000000"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/taskType"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/taskType"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.833" />
 
     <ImageView
         android:id="@+id/imageView7"
@@ -254,7 +266,7 @@
         android:layout_width="150dp"
         android:layout_height="53dp"
         android:layout_marginBottom="4dp"
-        android:text="Edit"
+        android:text="Save"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
@@ -269,9 +281,24 @@
         android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/date"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.429"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/imageView7"
         app:layout_constraintVertical_bias="0.0" />
+
+    <ImageButton
+        android:id="@+id/edit_deadline_button"
+        android:layout_width="47dp"
+        android:layout_height="26dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/deadline"
+        app:layout_constraintEnd_toEndOf="@+id/imageView7"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/deadline"
+        app:layout_constraintTop_toTopOf="@+id/imageView7"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/ic_edit_white"
+        app:tint="#2A82FF" />
 
     <ImageButton
         android:id="@+id/imageButton"
@@ -285,19 +312,48 @@
         app:layout_constraintVertical_bias="0.82"
         app:srcCompat="@android:drawable/arrow_down_float" />
 
-    <CheckBox
-        android:id="@+id/finishedBox"
-        android:layout_width="125dp"
-        android:layout_height="70dp"
-        android:checked="false"
-        android:clickable="false"
-        android:focusable="auto"
-        android:text="Finished?"
-        app:layout_constraintBottom_toTopOf="@+id/imageView15"
-        app:layout_constraintEnd_toEndOf="@+id/imageView7"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/taskName"
-        app:layout_constraintTop_toTopOf="@+id/taskName"
-        app:layout_constraintVertical_bias="0.0" />
+    <com.google.android.material.chip.ChipGroup
+        android:layout_width="359dp"
+        android:layout_height="50dp"
+        app:selectionRequired="true"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView17"
+        app:layout_constraintEnd_toEndOf="@+id/imageView22"
+        app:layout_constraintHorizontal_bias="0.45"
+        app:layout_constraintStart_toStartOf="@+id/imageView22"
+        app:layout_constraintTop_toTopOf="@+id/imageView22">
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/editLow"
+            android:layout_width="109dp"
+            android:layout_height="47dp"
+            android:layout_marginStart="8dp"
+            android:checkable="true"
+            android:checked="false"
+            android:text="Low"
+            app:chipIcon="@android:drawable/presence_online"
+            app:chipIconTint="@color/green_3" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/editMed"
+            android:layout_width="109dp"
+            android:layout_height="47dp"
+            android:checkable="true"
+            android:checked="false"
+            android:text="Medium"
+            app:chipIcon="@android:drawable/presence_online"
+            app:chipIconTint="#FFE92B" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/editHigh"
+            android:layout_width="109dp"
+            android:layout_height="47dp"
+            android:layout_marginEnd="12dp"
+            android:checkable="true"
+            android:checked="false"
+            android:text="High"
+            app:chipIcon="@android:drawable/presence_online"
+            app:chipIconTint="#E91E63" />
+
+    </com.google.android.material.chip.ChipGroup>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
