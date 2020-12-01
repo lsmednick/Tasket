@@ -27,7 +27,7 @@ public class EditTask extends AppCompatActivity implements DatePickerDialog.OnDa
     private String taskPriority;
     private String taskName;
     private String taskType;
-    //private String
+    private String taskCategory;
     TextView yearView;
     TextView monthView;
     TextView dayView;
@@ -40,6 +40,21 @@ public class EditTask extends AppCompatActivity implements DatePickerDialog.OnDa
         yearView = findViewById(R.id.year);
         monthView = findViewById(R.id.month);
         dayView = findViewById(R.id.date);
+        mAuth = FirebaseAuth.getInstance();
+
+
+        // Start with default values
+        taskName = "Task Name";
+        taskType = "to-do";
+        taskPriority = "low";
+        taskCategory = "work";
+        deadlineYear = Calendar.getInstance().get(Calendar.YEAR);
+        yearView.setText(String.valueOf(deadlineYear));
+        deadlineMonth = Calendar.getInstance().get(Calendar.MONTH);
+        monthView.setText(monthConverter(deadlineMonth + 1));
+        deadlineDay = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+        dayView.setText(String.valueOf(deadlineDay));
+
         ImageView img = findViewById(R.id.editTaskImage);
         img.setImageResource(R.drawable.tasket_logo);
         findViewById(R.id.edit_deadline_button).setOnClickListener(new View.OnClickListener() {
@@ -61,7 +76,15 @@ public class EditTask extends AppCompatActivity implements DatePickerDialog.OnDa
                 typeAlert();
             }
         });
+
+        findViewById(R.id.saveButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         setPriorityListener();
+        setCategoryListener();
     }
 
     // Helper method to prompt an alert dialog for a user to enter their task name.
@@ -99,11 +122,11 @@ public class EditTask extends AppCompatActivity implements DatePickerDialog.OnDa
                 TextView thisTask = findViewById(R.id.taskType);
                 switch (which) {
                     case 0:
-                        taskType = "To-Do";
+                        taskType = "to-do";
                         thisTask.setText(R.string.todotask);
                         break;
                     case 1:
-                        taskType = "Hourly";
+                        taskType = "hourly";
                         thisTask.setText(R.string.hourlyTask);
                         break;
                 }
@@ -120,7 +143,6 @@ public class EditTask extends AppCompatActivity implements DatePickerDialog.OnDa
             @Override
             public void onClick(View v) {
                 taskPriority = "low";
-                System.out.println(taskPriority);
             }
         });
         Chip chipMed = findViewById(R.id.editMed);
@@ -128,7 +150,6 @@ public class EditTask extends AppCompatActivity implements DatePickerDialog.OnDa
             @Override
             public void onClick(View v) {
                 taskPriority = "medium";
-                System.out.println(taskPriority);
             }
         });
         Chip chipHigh = findViewById(R.id.editHigh);
@@ -136,7 +157,50 @@ public class EditTask extends AppCompatActivity implements DatePickerDialog.OnDa
             @Override
             public void onClick(View v) {
                 taskPriority = "high";
-                System.out.println(taskPriority);
+            }
+        });
+    }
+
+    // Helper method to get data from our *other* chip group
+    private void setCategoryListener() {
+        Chip chipWork = findViewById(R.id.editWorkChip);
+        chipWork.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                taskCategory = "work";
+                System.out.println("Category selected: " + taskCategory);
+            }
+        });
+        Chip chipHome = findViewById(R.id.editHomeChip);
+        chipHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                taskCategory = "home";
+                System.out.println("Category selected: " + taskCategory);
+            }
+        });
+        Chip chipSchool = findViewById(R.id.editSchoolChip);
+        chipSchool.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                taskCategory = "school";
+                System.out.println("Category selected: " + taskCategory);
+            }
+        });
+        Chip chipPersonal = findViewById(R.id.editPersonalChip);
+        chipPersonal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                taskCategory = "personal";
+                System.out.println("Category selected: " + taskCategory);
+            }
+        });
+        Chip chipOther = findViewById(R.id.editOtherChip);
+        chipOther.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                taskCategory = "other";
+                System.out.println("Category selected: " + taskCategory);
             }
         });
     }
@@ -158,6 +222,10 @@ public class EditTask extends AppCompatActivity implements DatePickerDialog.OnDa
         monthView.setText(monthConverter(month + 1));
         deadlineDay = dayOfMonth;
         dayView.setText(String.valueOf(dayOfMonth));
+    }
+
+    private void saveTaskToDatabase() {
+        //TODO uuuuuuhhhhhhh
     }
 
     // Helper function to convert month int to string
