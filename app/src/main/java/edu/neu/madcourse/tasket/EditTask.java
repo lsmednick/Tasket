@@ -17,8 +17,13 @@ import android.widget.TextView;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Objects;
 
 public class EditTask extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
     private int deadlineMonth;
@@ -31,7 +36,9 @@ public class EditTask extends AppCompatActivity implements DatePickerDialog.OnDa
     TextView yearView;
     TextView monthView;
     TextView dayView;
+    private FirebaseDatabase database;
     private FirebaseAuth mAuth;
+    private boolean isNewTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,23 +47,28 @@ public class EditTask extends AppCompatActivity implements DatePickerDialog.OnDa
         yearView = findViewById(R.id.year);
         monthView = findViewById(R.id.month);
         dayView = findViewById(R.id.date);
+        database = FirebaseDatabase.getInstance();
         mAuth = FirebaseAuth.getInstance();
+        isNewTask = getIntent().getBooleanExtra("isNewTask", false);
 
+        // Start with default values if this is a new task
+        if (isNewTask) {
+            taskName = "Task Name";
+            taskType = "to-do";
+            taskPriority = "low";
+            taskCategory = "work";
+            deadlineYear = Calendar.getInstance().get(Calendar.YEAR);
+            yearView.setText(String.valueOf(deadlineYear));
+            deadlineMonth = Calendar.getInstance().get(Calendar.MONTH);
+            monthView.setText(monthConverter(deadlineMonth + 1));
+            deadlineDay = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+            dayView.setText(String.valueOf(deadlineDay));
+            ImageView img = findViewById(R.id.editTaskImage);
+            img.setImageResource(R.drawable.tasket_logo);
+        } else {
+            // TODO add functionality
+        }
 
-        // Start with default values
-        taskName = "Task Name";
-        taskType = "to-do";
-        taskPriority = "low";
-        taskCategory = "work";
-        deadlineYear = Calendar.getInstance().get(Calendar.YEAR);
-        yearView.setText(String.valueOf(deadlineYear));
-        deadlineMonth = Calendar.getInstance().get(Calendar.MONTH);
-        monthView.setText(monthConverter(deadlineMonth + 1));
-        deadlineDay = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
-        dayView.setText(String.valueOf(deadlineDay));
-
-        ImageView img = findViewById(R.id.editTaskImage);
-        img.setImageResource(R.drawable.tasket_logo);
         findViewById(R.id.edit_deadline_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -80,6 +92,12 @@ public class EditTask extends AppCompatActivity implements DatePickerDialog.OnDa
         findViewById(R.id.saveButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (isNewTask) {
+                    saveNewTaskToDatabase();
+                } else {
+                    //TODO add functionality here
+                    System.out.println("Not a new task!");
+                }
                 finish();
             }
         });
@@ -224,8 +242,27 @@ public class EditTask extends AppCompatActivity implements DatePickerDialog.OnDa
         dayView.setText(String.valueOf(dayOfMonth));
     }
 
-    private void saveTaskToDatabase() {
-        //TODO uuuuuuhhhhhhh
+    private void saveNewTaskToDatabase() {
+        DatabaseReference tasksRef = database.getReference("tasks");
+        String taskId = tasksRef.push().getKey();
+        FirebaseUser user = mAuth.getCurrentUser();
+        String uid = Objects.requireNonNull(user).getUid();
+        DatabaseReference userRef = database.getReference("Users/" + uid + "/tasks");
+
+        // Set up data to insert ito database
+        HashMap<Object, String> taskData = new HashMap<>();
+        taskData.put("picture", "");
+        taskData.put("name", taskName);
+        taskData.put("type", taskType);
+        taskData.put("deadlineYear", String.valueOf(deadlineYear));
+        taskData.put("deadlineMonth", String.valueOf(deadlineMonth));
+        taskData.put("deadlineDay", String.valueOf(deadlineDay));
+        taskData.put("priority", taskPriority);
+        taskData.put("category", taskCategory);
+        tasksRef.child(Objects.requireNonNull(taskId)).setValue(taskData);
+
+        // Insert unique task ID into user section
+        userRef.child(taskId).setValue(true);
     }
 
     // Helper function to convert month int to string

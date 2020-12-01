@@ -15,6 +15,19 @@
             android:layout_height="match_parent">
 
             <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Priority"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toBottomOf="@+id/cardDesc"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.549"
+                app:layout_constraintStart_toEndOf="@+id/cardDesc"
+                app:layout_constraintTop_toTopOf="@+id/cardDesc"
+                app:layout_constraintVertical_bias="0.0" />
+
+            <TextView
                 android:id="@+id/cardName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -33,7 +46,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Deadline"
-                android:textSize="18sp"
+                android:textSize="20sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -68,6 +81,32 @@
                 app:layout_constraintStart_toStartOf="@+id/cardName"
                 app:layout_constraintTop_toBottomOf="@+id/cardName"
                 app:layout_constraintVertical_bias="1.0" />
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Category"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="@+id/textView2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.598"
+                app:layout_constraintStart_toEndOf="@+id/textView2"
+                app:layout_constraintTop_toTopOf="@+id/textView2"
+                app:layout_constraintVertical_bias="1.0" />
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="38dp"
+                android:layout_height="40dp"
+                app:layout_constraintBottom_toBottomOf="@+id/cardName"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.085"
+                app:layout_constraintStart_toEndOf="@+id/cardName"
+                app:layout_constraintTop_toTopOf="@+id/cardName"
+                app:srcCompat="@drawable/ic_default_img_white"
+                android:contentDescription="TODO"
+                app:tint="#646464" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
