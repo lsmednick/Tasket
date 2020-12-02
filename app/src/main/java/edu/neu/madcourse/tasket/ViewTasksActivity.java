@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -44,19 +46,24 @@ public class ViewTasksActivity extends AppCompatActivity {
         FirebaseUser user = mAuth.getCurrentUser();
         uid = Objects.requireNonNull(user).getUid();
         fab = findViewById(R.id.view_tasks_fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new Thread(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        Intent i = new Intent(ViewTasksActivity.this, EditTask.class);
-                        i.putExtra("isNewTask", true);
-                        startActivity(i);
-                    }
-                }).start();
-            }
+        fab.setOnClickListener(v -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Choose Task Type\n(This cannot be changed later)").setItems(R.array.taskTypes,
+                    (dialog, which) -> {
+                        switch (which) {
+                            case 0:
+                                new Thread(() -> {
+                                    Intent i = new Intent(ViewTasksActivity.this, EditTask.class);
+                                    i.putExtra("isNewTask", true);
+                                    startActivity(i);
+                                }).start();
+                                break;
+                            case 1:
+                                System.out.println("haven't gotten here yet...");
+                                break;
+                        }
+                    });
+            builder.show();
         });
         recyclerView = (RecyclerView) findViewById(R.id.taskRecyclerView);
         recyclerView.setHasFixedSize(true);

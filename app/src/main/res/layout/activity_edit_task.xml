@@ -19,19 +19,6 @@
         app:srcCompat="@drawable/ic_edit_white"
         app:tint="#FFFFFF" />
 
-    <ImageButton
-        android:id="@+id/editTaskType"
-        android:layout_width="47dp"
-        android:layout_height="26dp"
-        app:layout_constraintBottom_toBottomOf="@+id/taskType"
-        app:layout_constraintEnd_toStartOf="@+id/button"
-        app:layout_constraintHorizontal_bias="0.023"
-        app:layout_constraintStart_toEndOf="@+id/taskType"
-        app:layout_constraintTop_toTopOf="@+id/taskType"
-        app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@drawable/ic_edit_white"
-        app:tint="#FFFFFF" />
-
     <TextView
         android:id="@+id/editTaskName"
         android:layout_width="wrap_content"
@@ -277,7 +264,7 @@
         android:text="Save"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.149"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
@@ -359,7 +346,7 @@
         android:layout_width="85dp"
         android:layout_height="70dp"
         android:layout_marginEnd="16dp"
-        android:text="Upload Photo"
+        android:text="Edit Photo"
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="@+id/taskType"
         app:layout_constraintEnd_toEndOf="parent"
@@ -367,13 +354,13 @@
         app:layout_constraintVertical_bias="1.0" />
 
     <HorizontalScrollView
-        android:scrollbars="none"
         android:layout_width="362dp"
         android:layout_height="62dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="9dp"
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="8dp"
+        android:scrollbars="none"
         app:layout_constraintBottom_toBottomOf="@+id/imageView21"
         app:layout_constraintEnd_toEndOf="@+id/imageView21"
         app:layout_constraintHorizontal_bias="0.0"
@@ -385,8 +372,8 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginTop="5dp"
-            app:singleLine="true"
             app:selectionRequired="true"
+            app:singleLine="true"
             app:singleSelection="true">
 
             <com.google.android.material.chip.Chip
@@ -395,9 +382,10 @@
                 android:layout_width="130dp"
                 android:layout_height="50dp"
                 android:layout_margin="6dp"
-                android:text="Work"
                 android:checked="true"
+                android:text="Work"
                 android:textAlignment="center" />
+
             <com.google.android.material.chip.Chip
                 android:id="@+id/editHomeChip"
                 style="@style/Widget.MaterialComponents.Chip.Filter"
@@ -406,6 +394,7 @@
                 android:layout_margin="6dp"
                 android:text="Home"
                 android:textAlignment="center" />
+
             <com.google.android.material.chip.Chip
                 android:id="@+id/editSchoolChip"
                 style="@style/Widget.MaterialComponents.Chip.Filter"
@@ -414,6 +403,7 @@
                 android:layout_margin="6dp"
                 android:text="School"
                 android:textAlignment="center" />
+
             <com.google.android.material.chip.Chip
                 android:id="@+id/editPersonalChip"
                 style="@style/Widget.MaterialComponents.Chip.Filter"
@@ -422,6 +412,7 @@
                 android:layout_margin="6dp"
                 android:text="Personal"
                 android:textAlignment="center" />
+
             <com.google.android.material.chip.Chip
                 android:id="@+id/editOtherChip"
                 style="@style/Widget.MaterialComponents.Chip.Filter"
@@ -432,5 +423,20 @@
                 android:textAlignment="center" />
         </com.google.android.material.chip.ChipGroup>
     </HorizontalScrollView>
+
+    <ToggleButton
+        android:id="@+id/toggleButton"
+        android:layout_width="150dp"
+        android:layout_height="53dp"
+        android:layout_marginBottom="4dp"
+        android:buttonTint="#1496F1"
+        android:checked="false"
+        android:text="ToggleButton"
+        android:textOff="In Progress"
+        android:textOn="Complete!"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.486"
+        app:layout_constraintStart_toEndOf="@+id/saveButton" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

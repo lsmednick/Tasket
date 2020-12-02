@@ -9,10 +9,12 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
@@ -33,6 +35,7 @@ public class EditTask extends AppCompatActivity implements DatePickerDialog.OnDa
     private String taskName;
     private String taskType;
     private String taskCategory;
+    private String status;
     TextView yearView;
     TextView monthView;
     TextView dayView;
@@ -57,6 +60,7 @@ public class EditTask extends AppCompatActivity implements DatePickerDialog.OnDa
             taskType = "to-do";
             taskPriority = "low";
             taskCategory = "work";
+            status = "in progress";
             deadlineYear = Calendar.getInstance().get(Calendar.YEAR);
             yearView.setText(String.valueOf(deadlineYear));
             deadlineMonth = Calendar.getInstance().get(Calendar.MONTH);
@@ -81,14 +85,6 @@ public class EditTask extends AppCompatActivity implements DatePickerDialog.OnDa
                 nameAlert();
             }
         });
-
-        findViewById(R.id.editTaskType).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                typeAlert();
-            }
-        });
-
         findViewById(R.id.saveButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -99,6 +95,19 @@ public class EditTask extends AppCompatActivity implements DatePickerDialog.OnDa
                     System.out.println("Not a new task!");
                 }
                 finish();
+            }
+        });
+        ToggleButton tog = (ToggleButton) findViewById(R.id.toggleButton);
+        tog.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    status = "complete";
+                    System.out.println(status);
+                } else {
+                    status = "in progress";
+                    System.out.println(status);
+                }
             }
         });
         setPriorityListener();
@@ -128,29 +137,6 @@ public class EditTask extends AppCompatActivity implements DatePickerDialog.OnDa
             }
         });
 
-        builder.show();
-    }
-
-    // Helper method to prompt alert dialog to let users choose between different task types
-    private void typeAlert() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Choose Task Type").setItems(R.array.taskTypes, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                TextView thisTask = findViewById(R.id.taskType);
-                switch (which) {
-                    case 0:
-                        taskType = "to-do";
-                        thisTask.setText(R.string.todotask);
-                        break;
-                    case 1:
-                        taskType = "hourly";
-                        thisTask.setText(R.string.hourlyTask);
-                        break;
-                }
-
-            }
-        });
         builder.show();
     }
 
@@ -259,6 +245,7 @@ public class EditTask extends AppCompatActivity implements DatePickerDialog.OnDa
         taskData.put("deadlineDay", String.valueOf(deadlineDay));
         taskData.put("priority", taskPriority);
         taskData.put("category", taskCategory);
+        taskData.put("status", status);
         tasksRef.child(Objects.requireNonNull(taskId)).setValue(taskData);
 
         // Insert unique task ID into user section
