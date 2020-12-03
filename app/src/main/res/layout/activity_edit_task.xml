@@ -11,7 +11,7 @@
         android:layout_width="47dp"
         android:layout_height="26dp"
         app:layout_constraintBottom_toBottomOf="@+id/editTaskName"
-        app:layout_constraintEnd_toStartOf="@+id/button"
+        app:layout_constraintEnd_toStartOf="@+id/editPhoto"
         app:layout_constraintHorizontal_bias="0.014"
         app:layout_constraintStart_toEndOf="@+id/editTaskName"
         app:layout_constraintTop_toTopOf="@+id/editTaskName"
@@ -342,7 +342,7 @@
     </com.google.android.material.chip.ChipGroup>
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/editPhoto"
         android:layout_width="85dp"
         android:layout_height="70dp"
         android:layout_marginEnd="16dp"

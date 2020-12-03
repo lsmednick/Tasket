@@ -10,6 +10,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 
 public class TaskCardRecyclerAdapter extends RecyclerView.Adapter<TaskCardRecyclerAdapter.MyViewHolder> {
@@ -38,6 +40,7 @@ public class TaskCardRecyclerAdapter extends RecyclerView.Adapter<TaskCardRecycl
     public TaskCardRecyclerAdapter(Context mContext, ArrayList<String> names, ArrayList<String> deadlines,
                                    ArrayList<String> images, ArrayList<String> categories,
                                    ArrayList<String> priorities, ArrayList<String> types) {
+        setHasStableIds(true);
         namesList = names;
         deadlinesList = deadlines;
         imageList = images;
@@ -57,6 +60,9 @@ public class TaskCardRecyclerAdapter extends RecyclerView.Adapter<TaskCardRecycl
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+        if (!imageList.get(position).equals("")) {
+            Picasso.get().load(imageList.get(position)).fit().into(holder.image);
+        }
         holder.name.setText(namesList.get(position));
         holder.deadline.setText(deadlinesList.get(position));
         holder.category.setText(categoryList.get(position));
@@ -65,9 +71,18 @@ public class TaskCardRecyclerAdapter extends RecyclerView.Adapter<TaskCardRecycl
         holder.type.setText(typeList.get(position));
     }
 
-
     @Override
     public int getItemCount() {
         return namesList.size();
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
     }
 }
