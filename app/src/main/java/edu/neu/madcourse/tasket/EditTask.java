@@ -32,8 +32,11 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
@@ -88,18 +91,19 @@ public class EditTask extends AppCompatActivity implements DatePickerDialog.OnDa
         storageReference = getInstance().getReference(); //firebase storage reference
         DatabaseReference tasksRef = database.getReference("tasks");
         taskId = tasksRef.push().getKey();
+        ImageView img = findViewById(R.id.editTaskImage);
 
         //init arrays of permissions
         cameraPermissions = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
         storagePermissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
-        // Start with default values if this is a new task
+        // Start with default values if this is a new task. Else populate task with databse values
         if (isNewTask) {
             taskName = "Task Name";
             taskType = "to-do";
             taskPriority = "low";
             taskCategory = "work";
-            taskPicture = "";
+            taskPicture = "https://firebasestorage.googleapis.com/v0/b/tasket-bf4b2.appspot.com/o/Task_Images%2Ftasket_logo.png?alt=media&token=2501c751-14cf-4491-8fe8-02c945221b83";
             status = "in progress";
             deadlineYear = Calendar.getInstance().get(Calendar.YEAR);
             yearView.setText(String.valueOf(deadlineYear));
@@ -107,21 +111,100 @@ public class EditTask extends AppCompatActivity implements DatePickerDialog.OnDa
             monthView.setText(monthConverter(deadlineMonth + 1));
             deadlineDay = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
             dayView.setText(String.valueOf(deadlineDay));
-            ImageView img = findViewById(R.id.editTaskImage);
             img.setImageResource(R.drawable.tasket_logo);
         } else {
-            // TODO add functionality
+            String tID = getIntent().getStringExtra("taskID");
+            DatabaseReference taskRef = FirebaseDatabase.getInstance().getReference("tasks/" +
+                    tID);
+            taskRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    for (DataSnapshot snap : snapshot.getChildren()) {
+                        System.out.println(snap.getKey() + " : " + snap.getValue());
+                        switch (snap.getKey()) {
+                            case "category":
+                                taskCategory = (String) snap.getValue();
+                                switch (taskCategory) {
+                                    case "work":
+                                        Chip workChip = findViewById(R.id.editWorkChip);
+                                        workChip.setChecked(true);
+                                        break;
+                                    case "home":
+                                        Chip homeChip = findViewById(R.id.editHomeChip);
+                                        homeChip.setChecked(true);
+                                        break;
+                                    case "school":
+                                        Chip schoolChip = findViewById(R.id.editSchoolChip);
+                                        schoolChip.setChecked(true);
+                                        break;
+                                    case "personal":
+                                        Chip personalChip = findViewById(R.id.editPersonalChip);
+                                        personalChip.setChecked(true);
+                                        break;
+                                    default:
+                                        Chip otherChip = findViewById(R.id.editOtherChip);
+                                        otherChip.setChecked(true);
+                                        break;
+                                }
+                                break;
+                            case "deadlineDay":
+                                deadlineDay = Integer.parseInt((String) snap.getValue());
+                                dayView.setText(String.valueOf(deadlineDay));
+                                break;
+                            case "deadlineMonth":
+                                deadlineMonth = Integer.parseInt((String) snap.getValue());
+                                monthView.setText(monthConverter(deadlineMonth + 1));
+                                break;
+                            case "deadlineYear":
+                                deadlineYear = Integer.parseInt((String) snap.getValue());
+                                yearView.setText(String.valueOf(deadlineYear));
+                                break;
+                            case "name":
+                                taskName = (String) snap.getValue();
+                                TextView nameView = findViewById(R.id.editTaskName);
+                                nameView.setText(taskName);
+                                break;
+                            case "picture":
+                                taskPicture = (String) snap.getValue();
+                                break;
+                            case "priority":
+                                taskPriority = (String) snap.getValue();
+                                if (taskPriority.equals("low")) {
+                                    Chip lowChip = findViewById(R.id.editLow);
+                                    lowChip.setChecked(true);
+                                } else if (taskPriority.equals("medium")) {
+                                    Chip medChip = findViewById(R.id.editMed);
+                                    medChip.setChecked(true);
+                                } else {
+                                    Chip highChip = findViewById(R.id.editHigh);
+                                    highChip.setChecked(true);
+                                }
+                                break;
+                            case "type":
+                                taskType = (String) snap.getValue();
+                                break;
+                            case "status":
+                                status = (String) snap.getValue();
+                                ToggleButton tog = findViewById(R.id.toggleButton);
+                                if (status.equals("complete")) {
+                                    tog.setChecked(true);
+                                }
+                        }
+                    }
+                    Picasso.get().load(taskPicture).into(img);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
         }
 
         findViewById(R.id.edit_deadline_button).setOnClickListener(v -> showDatePicker());
         findViewById(R.id.editName).setOnClickListener(v -> nameAlert());
         findViewById(R.id.saveButton).setOnClickListener(v -> {
-            if (isNewTask) {
-                saveNewTaskToDatabase();
-            } else {
-                //TODO add functionality here
-                System.out.println("Not a new task!");
-            }
+            saveNewTaskToDatabase();
             finish();
         });
         findViewById(R.id.editPhoto).setOnClickListener(v -> showImagePicDialog());
@@ -131,10 +214,8 @@ public class EditTask extends AppCompatActivity implements DatePickerDialog.OnDa
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     status = "complete";
-                    System.out.println(status);
                 } else {
                     status = "in progress";
-                    System.out.println(status);
                 }
             }
         });
@@ -327,21 +408,6 @@ public class EditTask extends AppCompatActivity implements DatePickerDialog.OnDa
     }
 
     private void uploadProfileCoverPhoto(final Uri uri) {
-        /*Instead of creating separate function for Profile Picture and Cover Photo
-         * i'm doing work for both in same function
-         *
-         * To add check ill add a string variable and assign it value "image" when user clicks
-         * "Edit Profile Pic", and assign it value "cover" when user clicks "Edit Cover Photo"
-         * Here: image is the key in each user containing url of user's profile picture
-         *       cover is the key in each user containing url of user's cover photo */
-
-        /*The parameter "image_uri" contains the uri of image picked either from camera or gallery
-         * We will use UID of the currently signed in user as name of the image so there will be only one image for
-         * profile and one image for cover for each user*/
-
-        //path and name of image to be stored in firebase storage
-        //e.g. Users_Profile_Cover_Imgs/image_e12f3456f789.jpg
-        //e.g. Users_Profile_Cover_Imgs/cover_c123n4567g89.jpg
         String filePathAndName = "Task_Images/" + "" + "task_" + taskId;
 
         StorageReference storageReference2nd = storageReference.child(filePathAndName);
@@ -455,7 +521,7 @@ public class EditTask extends AppCompatActivity implements DatePickerDialog.OnDa
         DatabaseReference userRef = database.getReference("Users/" + uid + "/tasks");
 
         // Set up data to insert ito database
-        HashMap<Object, String> taskData = new HashMap<>();
+        HashMap<String, Object> taskData = new HashMap<>();
         taskData.put("name", taskName);
         taskData.put("type", taskType);
         taskData.put("picture", taskPicture);
@@ -465,10 +531,19 @@ public class EditTask extends AppCompatActivity implements DatePickerDialog.OnDa
         taskData.put("priority", taskPriority);
         taskData.put("category", taskCategory);
         taskData.put("status", status);
-        tasksRef.child(Objects.requireNonNull(taskId)).setValue(taskData);
 
-        // Insert unique task ID into user section
-        userRef.child(taskId).setValue(true);
+        if (isNewTask) {
+            tasksRef.child(Objects.requireNonNull(taskId)).setValue(taskData);
+            // Insert unique task ID into user section
+            userRef.child(taskId).setValue(true);
+        } else {
+            System.out.println("NOT NEW TASK!!! NOT NEW TASK!!");
+            tasksRef.child(getIntent().getStringExtra("taskID")).updateChildren(taskData);
+        }
+    }
+
+    private void updateTask() {
+
     }
 
     // Helper function to convert month int to string

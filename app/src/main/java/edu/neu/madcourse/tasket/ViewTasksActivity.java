@@ -28,7 +28,7 @@ import java.util.Objects;
 public class ViewTasksActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private RecyclerView.Adapter mAdapter;
-    private RecyclerView.LayoutManager layoutManager;
+    private LinearLayoutManager layoutManager;
     private final ArrayList<String> names = new ArrayList<>();
     private final ArrayList<String> types = new ArrayList<>();
     private final ArrayList<String> images = new ArrayList<>();
@@ -55,11 +55,12 @@ public class ViewTasksActivity extends AppCompatActivity {
                                 new Thread(() -> {
                                     Intent i = new Intent(ViewTasksActivity.this, EditTask.class);
                                     i.putExtra("isNewTask", true);
+                                    i.putExtra("taskID", "none");
                                     startActivity(i);
                                 }).start();
                                 break;
                             case 1:
-                                System.out.println("haven't gotten here yet...");
+
                                 break;
                         }
                     });
@@ -68,6 +69,8 @@ public class ViewTasksActivity extends AppCompatActivity {
         recyclerView = (RecyclerView) findViewById(R.id.taskRecyclerView);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
+        layoutManager.setReverseLayout(true);
+        layoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(layoutManager);
     }
 
@@ -154,7 +157,7 @@ public class ViewTasksActivity extends AppCompatActivity {
                         deadlines.add(month + "/" + day + "/" + year);
                     }
                     mAdapter = new TaskCardRecyclerAdapter(ViewTasksActivity.this, names, deadlines, images,
-                            categories, priorities, types);
+                            categories, priorities, types, taskIDs);
                     recyclerView.setAdapter(mAdapter);
                 }
             }
