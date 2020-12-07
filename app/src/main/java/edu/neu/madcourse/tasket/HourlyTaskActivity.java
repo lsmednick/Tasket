@@ -17,13 +17,13 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.InputFilter;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -47,7 +47,7 @@ import java.util.Objects;
 
 import static com.google.firebase.storage.FirebaseStorage.getInstance;
 
-public class EditTask extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
+public class HourlyTaskActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
     private int deadlineMonth;
     private int deadlineDay;
     private int deadlineYear;
@@ -81,7 +81,7 @@ public class EditTask extends AppCompatActivity implements DatePickerDialog.OnDa
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit_task);
+        setContentView(R.layout.activity_hourly_task);
         yearView = findViewById(R.id.year);
         monthView = findViewById(R.id.month);
         dayView = findViewById(R.id.date);
@@ -100,7 +100,7 @@ public class EditTask extends AppCompatActivity implements DatePickerDialog.OnDa
         // Start with default values if this is a new task. Else populate task with databse values
         if (isNewTask) {
             taskName = "Task Name";
-            taskType = "to-do";
+            taskType = "hourly";
             taskPriority = "low";
             taskCategory = "work";
             taskPicture = "https://firebasestorage.googleapis.com/v0/b/tasket-bf4b2.appspot.com/o/Task_Images%2Ftasket_logo.png?alt=media&token=2501c751-14cf-4491-8fe8-02c945221b83";
@@ -183,12 +183,6 @@ public class EditTask extends AppCompatActivity implements DatePickerDialog.OnDa
                             case "type":
                                 taskType = (String) snap.getValue();
                                 break;
-                            case "status":
-                                status = (String) snap.getValue();
-                                ToggleButton tog = findViewById(R.id.toggleButton);
-                                if (status.equals("complete")) {
-                                    tog.setChecked(true);
-                                }
                         }
                     }
                     Picasso.get().load(taskPicture).into(img);
@@ -208,16 +202,16 @@ public class EditTask extends AppCompatActivity implements DatePickerDialog.OnDa
             finish();
         });
         findViewById(R.id.editPhoto).setOnClickListener(v -> showImagePicDialog());
-        ToggleButton tog = (ToggleButton) findViewById(R.id.toggleButton);
-        tog.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        Button hours = findViewById(R.id.logButton);
+        hours.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    status = "complete";
-                } else {
-                    status = "in progress";
-                }
+            public void onClick(View v) {
+
             }
+        });
+        findViewById(R.id.logButton).setOnClickListener(v -> {
+            Intent i = new Intent(HourlyTaskActivity.this, HourlyLog.class);
+            startActivity(i);
         });
         setPriorityListener();
         setCategoryListener();
@@ -229,7 +223,7 @@ public class EditTask extends AppCompatActivity implements DatePickerDialog.OnDa
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Enter Task Name");
         final EditText input = new EditText(this);
-        input.setFilters(new InputFilter[]{new InputFilter.LengthFilter(11)});
+        input.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
         builder.setView(input);
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
@@ -427,7 +421,7 @@ public class EditTask extends AppCompatActivity implements DatePickerDialog.OnDa
                             Picasso.get().load(taskPicture).into((ImageView) findViewById(R.id.editTaskImage));
                         } else {
                             //error
-                            Toast.makeText(EditTask.this, "Some error occured", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(HourlyTaskActivity.this, "Some error occured", Toast.LENGTH_SHORT).show();
                         }
                     }
                 })
@@ -435,7 +429,7 @@ public class EditTask extends AppCompatActivity implements DatePickerDialog.OnDa
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         //there were some error(s), get and show error message, dismiss progress dialog
-                        Toast.makeText(EditTask.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(HourlyTaskActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }

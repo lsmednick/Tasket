@@ -60,13 +60,18 @@ public class ViewTasksActivity extends AppCompatActivity {
                                 }).start();
                                 break;
                             case 1:
-
+                                new Thread(() -> {
+                                    Intent i = new Intent(ViewTasksActivity.this, HourlyTaskActivity.class);
+                                    i.putExtra("isNewTask", true);
+                                    i.putExtra("taskID", "none");
+                                    startActivity(i);
+                                }).start();
                                 break;
                         }
                     });
             builder.show();
         });
-        recyclerView = (RecyclerView) findViewById(R.id.taskRecyclerView);
+        recyclerView = findViewById(R.id.taskRecyclerView);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
         layoutManager.setReverseLayout(true);
