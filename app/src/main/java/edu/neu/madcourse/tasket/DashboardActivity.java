@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,11 +14,17 @@ import android.view.MenuItem;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
+
+import edu.neu.madcourse.tasket.notifications.Token;
 
 public class DashboardActivity extends AppCompatActivity {
 
     FirebaseAuth firebaseAuth;
     ActionBar actionBar;
+    String mUID;
 
 
     @Override
@@ -44,6 +51,23 @@ public class DashboardActivity extends AppCompatActivity {
         ft1.replace(R.id.content, fragment1, "");
         ft1.commit();
 
+        checkUserStatus();
+
+        //update token
+        updateToken(FirebaseInstanceId.getInstance().getToken());
+
+    }
+
+    @Override
+    protected void onResume() {
+        checkUserStatus();
+        super.onResume();
+    }
+
+    public void updateToken(String token) {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Tokens");
+        Token mToken = new Token(token);
+        ref.child(mUID).setValue(mToken);
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener selectedListener =
@@ -76,6 +100,14 @@ public class DashboardActivity extends AppCompatActivity {
                             ft3.replace(R.id.content, fragment3, "");
                             ft3.commit();
                             return true;
+                        case R.id.nav_chat:
+                            //users fragment transaction
+                            actionBar.setTitle("Chats");//change actionbar title
+                            ChatListFragment fragment4 = new ChatListFragment();
+                            FragmentTransaction ft4 = getSupportFragmentManager().beginTransaction();
+                            ft4.replace(R.id.content, fragment4, "");
+                            ft4.commit();
+                            return true;
                     }
                     return false;
                 }
@@ -88,11 +120,19 @@ public class DashboardActivity extends AppCompatActivity {
             // user is signed in
             // set email of loggged in user
             // mProfileTv.setText(user.getEmail());
+            mUID = user.getUid();
+
+            //save uid of currently signed in user in shared preferences
+            SharedPreferences sp = getSharedPreferences("SP_USER", MODE_PRIVATE);
+            SharedPreferences.Editor editor = sp.edit();
+            editor.putString("Current_USERID", mUID);
+            editor.apply();
 
         }
         else {
-            // user is not signed in, go to main activity
+            //user not signed in, go to main activity
             startActivity(new Intent(DashboardActivity.this, MainActivity.class));
+            finish();
         }
     }
 
