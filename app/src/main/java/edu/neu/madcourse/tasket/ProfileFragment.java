@@ -19,6 +19,9 @@ import androidx.fragment.app.Fragment;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -527,5 +530,50 @@ public class ProfileFragment extends Fragment {
         Intent galleryIntent = new Intent(Intent.ACTION_PICK);
         galleryIntent.setType("image/*");
         startActivityForResult(galleryIntent, IMAGE_PICK_GALLERY_CODE);
+    }
+
+    private void checkUserStatus(){
+        //get current user
+        FirebaseUser user = firebaseAuth.getCurrentUser();
+        if (user != null){
+            //user is signed in stay here
+            //set email of logged in user
+            //mProfileTv.setText(user.getEmail());
+        }
+        else {
+            //user not signed in, go to main acitivity
+            startActivity(new Intent(getActivity(), MainActivity.class));
+            getActivity().finish();
+        }
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        setHasOptionsMenu(true);//to show menu option in fragment
+        super.onCreate(savedInstanceState);
+    }
+
+    /*inflate options menu*/
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        //inflating menu
+        inflater.inflate(R.menu.menu_main, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    /*handle menu item clicks*/
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        //get item id
+        int id = item.getItemId();
+        if (id == R.id.action_logout){
+            firebaseAuth.signOut();
+            checkUserStatus();
+        }
+        if (id == R.id.action_add_post){
+            startActivity(new Intent(getActivity(), AddPostActivity.class));
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }
