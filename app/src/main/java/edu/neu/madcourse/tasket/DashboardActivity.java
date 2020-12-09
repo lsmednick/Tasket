@@ -22,10 +22,12 @@ import edu.neu.madcourse.tasket.notifications.Token;
 
 public class DashboardActivity extends AppCompatActivity {
 
+    //firebase auth
     FirebaseAuth firebaseAuth;
-    ActionBar actionBar;
-    String mUID;
 
+    ActionBar actionBar;
+
+    String mUID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,15 +38,14 @@ public class DashboardActivity extends AppCompatActivity {
         actionBar = getSupportActionBar();
         actionBar.setTitle("Profile");
 
-        // init
+        //init
         firebaseAuth = FirebaseAuth.getInstance();
 
-        // bottom navigation
+        //bottom navigation
         BottomNavigationView navigationView = findViewById(R.id.navigation);
-
         navigationView.setOnNavigationItemSelectedListener(selectedListener);
 
-        // home fragment transaction (default)
+        //home fragment transaction (default, on star)
         actionBar.setTitle("Home");//change actionbar title
         HomeFragment fragment1 = new HomeFragment();
         FragmentTransaction ft1 = getSupportFragmentManager().beginTransaction();
@@ -74,10 +75,10 @@ public class DashboardActivity extends AppCompatActivity {
             new BottomNavigationView.OnNavigationItemSelectedListener() {
                 @Override
                 public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                    // handle item clicks
-                    switch(menuItem.getItemId()) {
+                    //handle item clicks
+                    switch (menuItem.getItemId()) {
                         case R.id.nav_home:
-                            // home fragment transaction
+                            //home fragment transaction
                             actionBar.setTitle("Home");//change actionbar title
                             HomeFragment fragment1 = new HomeFragment();
                             FragmentTransaction ft1 = getSupportFragmentManager().beginTransaction();
@@ -85,7 +86,7 @@ public class DashboardActivity extends AppCompatActivity {
                             ft1.commit();
                             return true;
                         case R.id.nav_profile:
-                            // profile fragment transaction
+                            //profile fragment transaction
                             actionBar.setTitle("Profile");//change actionbar title
                             ProfileFragment fragment2 = new ProfileFragment();
                             FragmentTransaction ft2 = getSupportFragmentManager().beginTransaction();
@@ -93,7 +94,7 @@ public class DashboardActivity extends AppCompatActivity {
                             ft2.commit();
                             return true;
                         case R.id.nav_users:
-                            // users fragment transaction
+                            //users fragment transaction
                             actionBar.setTitle("Users");//change actionbar title
                             UsersFragment fragment3 = new UsersFragment();
                             FragmentTransaction ft3 = getSupportFragmentManager().beginTransaction();
@@ -109,17 +110,18 @@ public class DashboardActivity extends AppCompatActivity {
                             ft4.commit();
                             return true;
                     }
+
                     return false;
                 }
             };
 
     private void checkUserStatus() {
-        // get current user
+        //get current user
         FirebaseUser user = firebaseAuth.getCurrentUser();
-        if (user!=null) {
-            // user is signed in
-            // set email of loggged in user
-            // mProfileTv.setText(user.getEmail());
+        if (user != null) {
+            //user is signed in stay here
+            //set email of logged in user
+            //mProfileTv.setText(user.getEmail());
             mUID = user.getUid();
 
             //save uid of currently signed in user in shared preferences
@@ -128,9 +130,8 @@ public class DashboardActivity extends AppCompatActivity {
             editor.putString("Current_USERID", mUID);
             editor.apply();
 
-        }
-        else {
-            //user not signed in, go to main activity
+        } else {
+            //user not signed in, go to main acitivity
             startActivity(new Intent(DashboardActivity.this, MainActivity.class));
             finish();
         }
@@ -144,26 +145,10 @@ public class DashboardActivity extends AppCompatActivity {
 
     @Override
     protected void onStart() {
+        //check on start of app
         checkUserStatus();
         super.onStart();
     }
-    // inflate options menu
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-    // handle clicking on menu item
 
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        // get item id
-        int id = item.getItemId();
-        if (id == R.id.action_logout) {
-            firebaseAuth.signOut();
-            checkUserStatus();
-        }
-        return super.onOptionsItemSelected(item);
-    }
 }

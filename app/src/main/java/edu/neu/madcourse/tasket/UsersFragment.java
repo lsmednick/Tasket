@@ -26,7 +26,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -89,7 +88,7 @@ public class UsersFragment extends Fragment {
                     ModelUser modelUser = ds.getValue(ModelUser.class);
 
                     //get all users except currently signed in user
-                    if (!modelUser.getUid().equals(fUser.getUid())) {
+                     if (!modelUser.getUid().equals(fUser.getUid())) {
                         userList.add(modelUser);
                     }
 
@@ -183,9 +182,6 @@ public class UsersFragment extends Fragment {
         //SearchView
         MenuItem item = menu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(item);
-
-        //hide addpost icon from this fragment
-        menu.findItem(R.id.action_add_post).setVisible(false);
 
         //search listener
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
