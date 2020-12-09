@@ -176,14 +176,6 @@
         app:layout_constraintStart_toStartOf="@+id/imageView14"
         app:layout_constraintTop_toTopOf="@+id/imageView14" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:layout_width="357dp"
-        android:layout_height="123dp"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView19"
-        app:layout_constraintEnd_toEndOf="@+id/imageView19"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/imageView23" />
-
     <TextView
         android:id="@+id/collaborators"
         android:layout_width="wrap_content"
@@ -301,6 +293,15 @@
         app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/ic_edit_white"
         app:tint="#2A82FF" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/editCollabRecyc"
+        android:layout_width="445dp"
+        android:layout_height="280dp"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView19"
+        app:layout_constraintEnd_toEndOf="@+id/imageView19"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/imageView23" />
 
     <com.google.android.material.chip.ChipGroup
         android:id="@+id/editChipGroup"

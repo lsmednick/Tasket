@@ -3,6 +3,8 @@ package edu.neu.madcourse.tasket;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.app.AlertDialog;
@@ -41,6 +43,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Objects;
@@ -57,6 +60,8 @@ public class EditTask extends AppCompatActivity implements DatePickerDialog.OnDa
     private String taskCategory;
     private String taskPicture;
     private String status;
+    private String uid;
+    private HashMap<String, Object> collabs;
     TextView yearView;
     TextView monthView;
     TextView dayView;
@@ -64,6 +69,13 @@ public class EditTask extends AppCompatActivity implements DatePickerDialog.OnDa
     private FirebaseAuth mAuth;
     private boolean isNewTask;
     private String taskId;
+    // Recycler view essentials
+    private RecyclerView recyclerView;
+    private RecyclerView.Adapter mAdapter;
+    private LinearLayoutManager layoutManager;
+    private ArrayList<String> emailList = new ArrayList<>();
+    private ArrayList<String> nameList = new ArrayList<>();
+    private ArrayList<String> imgList = new ArrayList<>();
     //storage
     StorageReference storageReference;
     //permissions constants
@@ -92,6 +104,9 @@ public class EditTask extends AppCompatActivity implements DatePickerDialog.OnDa
         DatabaseReference tasksRef = database.getReference("tasks");
         taskId = tasksRef.push().getKey();
         ImageView img = findViewById(R.id.editTaskImage);
+        FirebaseUser user = mAuth.getCurrentUser();
+        uid = Objects.requireNonNull(user).getUid();
+        collabs = new HashMap<>();
 
         //init arrays of permissions
         cameraPermissions = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
@@ -105,6 +120,7 @@ public class EditTask extends AppCompatActivity implements DatePickerDialog.OnDa
             taskCategory = "work";
             taskPicture = "https://firebasestorage.googleapis.com/v0/b/tasket-bf4b2.appspot.com/o/Task_Images%2Ftasket_logo.png?alt=media&token=2501c751-14cf-4491-8fe8-02c945221b83";
             status = "in progress";
+            collabs.put(uid, true);
             deadlineYear = Calendar.getInstance().get(Calendar.YEAR);
             yearView.setText(String.valueOf(deadlineYear));
             deadlineMonth = Calendar.getInstance().get(Calendar.MONTH);
@@ -221,6 +237,70 @@ public class EditTask extends AppCompatActivity implements DatePickerDialog.OnDa
         });
         setPriorityListener();
         setCategoryListener();
+        recyclerView = findViewById(R.id.editCollabRecyc);
+        recyclerView.setHasFixedSize(true);
+        layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        recyclerView.setLayoutManager(layoutManager);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        nameList.clear();
+        imgList.clear();
+        emailList.clear();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        nameList.clear();
+        imgList.clear();
+        emailList.clear();
+        setUpCollabRecycler();
+    }
+
+    // Helper method to set up collaborator recycler view
+    private void setUpCollabRecycler() {
+        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("Users");
+        usersRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot snap : snapshot.getChildren()) {
+                    if (collabs.containsKey(snap.getKey())) {
+                        HashMap<String, String> map = (HashMap<String, String>) snap.getValue();
+                        for (String str : map.keySet()) {
+                            switch (str) {
+                                case "email":
+                                    emailList.add(map.get(str));
+                                    break;
+                                case "image":
+                                    imgList.add(map.get(str));
+                                    break;
+                                case "name":
+                                    nameList.add(map.get(str));
+                                    break;
+                            }
+                        }
+                    }
+                    System.out.println(emailList);
+                    System.out.println(imgList);
+                    System.out.println(nameList);
+                    mAdapter = new CollabCardRecyclerAdapter(EditTask.this, nameList, imgList,
+                            emailList);
+                    recyclerView.setAdapter(mAdapter);
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+
+
     }
 
     // Helper method to prompt an alert dialog for a user to enter their task name.
@@ -516,8 +596,6 @@ public class EditTask extends AppCompatActivity implements DatePickerDialog.OnDa
 
     private void saveNewTaskToDatabase() {
         DatabaseReference tasksRef = database.getReference("tasks");
-        FirebaseUser user = mAuth.getCurrentUser();
-        String uid = Objects.requireNonNull(user).getUid();
         DatabaseReference userRef = database.getReference("Users/" + uid + "/tasks");
 
         // Set up data to insert ito database
@@ -532,12 +610,16 @@ public class EditTask extends AppCompatActivity implements DatePickerDialog.OnDa
         taskData.put("category", taskCategory);
         taskData.put("status", status);
 
+        HashMap<String, Object> collabData = new HashMap<>();
+        collabData.put(uid, true);
+
+        taskData.put("collaborators", collabData);
+
         if (isNewTask) {
             tasksRef.child(Objects.requireNonNull(taskId)).setValue(taskData);
             // Insert unique task ID into user section
             userRef.child(taskId).setValue(true);
         } else {
-            System.out.println("NOT NEW TASK!!! NOT NEW TASK!!");
             tasksRef.child(getIntent().getStringExtra("taskID")).updateChildren(taskData);
         }
     }
