@@ -1,16 +1,16 @@
 package edu.neu.madcourse.tasket;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.EditText;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -18,12 +18,10 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 public class ViewTeams extends AppCompatActivity {
 
@@ -95,12 +93,26 @@ public class ViewTeams extends AppCompatActivity {
     }
 
     private String createTeam(String teamName) {
+        // add team to database
         DatabaseReference teamRef = this.database.getReference("teams");
         DatabaseReference pushID = teamRef.push();
         pushID.child("teamName").setValue(teamName);
 
+        // add team to user
         DatabaseReference newRef = this.database.getReference("Users/" + CURRENT_USER_KEY + "/" + "teams");
         newRef.child(pushID.getKey()).setValue(true);
+
+        // add user as member of team
+        DatabaseReference memberRef = this.database.getReference("teams/" + pushID.getKey() + "/associated_members");
+        memberRef.child(CURRENT_USER_KEY).setValue(true);
+
+        // add user as manager of subteam
+        DatabaseReference manRef = this.database.getReference("teams/" + pushID.getKey() + "/permissions");
+        manRef.child(CURRENT_USER_KEY).setValue(true);
+
+        // add subteam to user's privileges
+        DatabaseReference uRef = this.database.getReference("Users/" + CURRENT_USER_KEY + "/privileges");
+        uRef.child(pushID.getKey()).setValue(true);
 
         return pushID.getKey();
     }

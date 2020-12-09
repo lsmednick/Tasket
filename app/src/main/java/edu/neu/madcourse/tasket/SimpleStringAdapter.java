@@ -25,6 +25,10 @@ public class SimpleStringAdapter extends RecyclerView.Adapter<SimpleStringAdapte
         mydata = new ArrayList<>(data.keySet());
         thisActivity = activityName;
         this.newActivity = newActivity;
+
+        if (mydata.size() == 0) {
+            mydata.add("click to add!");
+        }
     }
 
     public SimpleStringAdapter(ArrayList<String> data) {
@@ -32,6 +36,10 @@ public class SimpleStringAdapter extends RecyclerView.Adapter<SimpleStringAdapte
         mydata = data;
         thisActivity = null;
         this.newActivity = null;
+
+        if (mydata.size() == 0) {
+            mydata.add("click to add!");
+        }
     }
 
 
@@ -49,28 +57,35 @@ public class SimpleStringAdapter extends RecyclerView.Adapter<SimpleStringAdapte
     public void onBindViewHolder(@NonNull SimpleViewHolder holder, int position) {
         String data = mydata.get(position);
         holder.textView.setText(data);
-        holder.textView.setOnClickListener(v -> {
-            if (dataMap != null) {
+        if (!data.equals("click to add!")) {
+            holder.textView.setOnClickListener(v -> {
+                if (dataMap != null) {
 
-                // sends existing team's key, teamName, and type to ViewTeam
-                String key = dataMap.get(data);
-                //TODO start activity ViewTeam and pass along key
-                Toast.makeText(v.getContext(), "CLICKED", Toast.LENGTH_LONG).show();
-                Intent to_view_team = new Intent(thisActivity, this.newActivity);
-                String teamType = "subteams";
-                if (this.thisActivity.getClass() == ViewTeams.class) {
-                    teamType = "teams";
+                    // sends existing team's key, teamName, and type to ViewTeam
+                    String key = dataMap.get(data);
+                    //TODO start activity ViewTeam and pass along key
+                    Toast.makeText(v.getContext(), "CLICKED", Toast.LENGTH_LONG).show();
+                    Intent to_view_team = new Intent(thisActivity, this.newActivity);
+                    String teamType = "subteams";
+                    if (this.thisActivity.getClass() == ViewTeams.class) {
+                        teamType = "teams";
+                    } else if (this.newActivity == DashboardActivity.class) {
+                        teamType = "user";
+                    }
+
+                    to_view_team.putExtra("TEAM_KEY", key);
+                    to_view_team.putExtra("TEAM_TYPE", teamType);
+                    thisActivity.startActivity(to_view_team);
                 }
-
-                to_view_team.putExtra("TEAM_KEY", key);
-                to_view_team.putExtra("TEAM_TYPE", teamType);
-                thisActivity.startActivity(to_view_team);
-            }
-        });
+            });
+        }
     }
 
     @Override
     public int getItemCount() {
+        if (mydata.get(0).equals("click to add!")) {
+            return 0;
+        }
         return mydata.size();
     }
 

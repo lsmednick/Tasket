@@ -17,6 +17,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+
 public class ViewTeam extends AppCompatActivity {
     private TabLayout tabLayout;
     private ViewPager viewPager;
@@ -31,22 +33,28 @@ public class ViewTeam extends AppCompatActivity {
 
     private Team currentTeam;
     final static String CURRENT_USER_KEY = FirebaseAuth.getInstance().getUid();
+    private ArrayList<String> userprivileges;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_view_team);
+
+        this.database = FirebaseDatabase.getInstance();
 
         Intent intent = getIntent();
         String teamKey = intent.getStringExtra("TEAM_KEY");
         this.teamType = intent.getStringExtra("TEAM_TYPE");
+
+        this.userprivileges = new ArrayList<>();
+        userOwner(teamKey);
 
         System.out.println("ViewTeamKeys: " + teamKey + " " + teamType);
 
 
         teamName = findViewById(R.id.view_team_text_view);
 
-        this.database = FirebaseDatabase.getInstance();
 
         // existing
         if (teamKey != null) {
@@ -62,7 +70,6 @@ public class ViewTeam extends AppCompatActivity {
         this.permissionTab = findViewById(R.id.ViewTeamPermissionTab);
         this.viewPager = findViewById(R.id.ViewTeamViewPager);
 
-
         // change UI for subteams - all other functionality is the same
         if (teamType.equals("subteams")) {
             this.tabLayout.setBackgroundColor(getResources().getColor(R.color.green_2));
@@ -70,6 +77,7 @@ public class ViewTeam extends AppCompatActivity {
             //TODO figure out how to change the color of the individual tabs
             tabLayout.removeTabAt(1);
         }
+
 
 
         pageAdapter = new PageAdapter(getSupportFragmentManager(), tabLayout.getTabCount(), teamKey, teamType);
@@ -140,6 +148,40 @@ public class ViewTeam extends AppCompatActivity {
     public void setName(String name) {
         name = "  " + name;
         this.teamName.setText(name);
+    }
+
+    private void userOwner(String teamkey) {
+
+        ArrayList<String> priv = new ArrayList<String>();
+        DatabaseReference userRef = this.database.getReference("Users/" + CURRENT_USER_KEY + "/privileges");
+        userRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot postSnap : snapshot.getChildren()) {
+                    priv.add(postSnap.getKey());
+                }
+                System.out.println(priv);
+                setGlobalPrivileges(priv, teamkey);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+    }
+
+    private void setGlobalPrivileges(ArrayList<String> privs, String key) {
+        this.userprivileges = privs;
+        if (!userprivileges.contains(key)) {
+            tabLayout.removeTabAt(3);
+            this.tabLayout.setBackgroundColor(getResources().getColor(R.color.blue_2));
+
+        }
+        System.out.println("privs: " + this.userprivileges);
+
     }
 
 }

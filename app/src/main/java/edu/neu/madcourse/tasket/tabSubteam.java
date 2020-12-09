@@ -24,7 +24,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -191,6 +190,18 @@ public class tabSubteam extends Fragment {
         // add to team's subteams
         DatabaseReference ref = this.database.getReference("teams/" + this.key + "/subteams");
         ref.child(pushID.getKey()).setValue(true);
+
+        // add user to subteam's members
+        DatabaseReference subRef = this.database.getReference("subteams/" + pushID.getKey() + "/associated_memebers");
+        subRef.child(CURRENT_USER_KEY).setValue(true);
+
+        // add user as manager of subteam
+        DatabaseReference manRef = this.database.getReference("subteams/" + pushID.getKey() + "/permissions");
+        manRef.child(CURRENT_USER_KEY).setValue(true);
+
+        // add subteam to user's privileges
+        DatabaseReference uRef = this.database.getReference("Users/" + CURRENT_USER_KEY + "/privileges");
+        uRef.child(pushID.getKey()).setValue(true);
 
         return pushID.getKey();
     }
