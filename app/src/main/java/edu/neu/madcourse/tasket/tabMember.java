@@ -202,7 +202,8 @@ public class tabMember extends Fragment {
                         myMap.put(name, key);
                     }
                     System.out.println("MEMBERS: " + myMap.toString());
-                    memberRecycler.setAdapter(new SimpleStringAdapter(myMap, getActivity(), DashboardActivity.class));
+
+                    memberRecycler.setAdapter(new SimpleStringAdapter(myMap, getActivity(), OtherProfileFragment.class));
                     System.out.println(myAdapter.getItemCount());
                 }
 

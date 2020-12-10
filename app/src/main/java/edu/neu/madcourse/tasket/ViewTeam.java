@@ -111,6 +111,10 @@ public class ViewTeam extends AppCompatActivity {
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
     }
 
+    public PageAdapter getPageAdapter() {
+        return this.pageAdapter;
+    }
+
     public void getTeamInfo(String key, FirebaseDatabase database) {
 
 

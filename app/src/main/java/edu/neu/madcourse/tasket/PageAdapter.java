@@ -24,6 +24,7 @@ public class PageAdapter extends FragmentPagerAdapter {
     private static final String CURRENT_USER_ID = FirebaseAuth.getInstance().getUid();
     private ArrayList<String> userprivileges;
     private int lastPos;
+    private String tempKey;
 
     public PageAdapter(@NonNull FragmentManager fm, int numOfTabs, String key, String teamType) {
         super(fm);
@@ -41,6 +42,7 @@ public class PageAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         Fragment myFrag;
         Bundle myBundle = new Bundle();
+
         myBundle.putString("KEY", this.key);
         myBundle.putString("TYPE", this.teamType);
 
@@ -57,6 +59,7 @@ public class PageAdapter extends FragmentPagerAdapter {
         }
 
         switch (position) {
+
             case 0:
                 myFrag = new tabTask();
                 break;
