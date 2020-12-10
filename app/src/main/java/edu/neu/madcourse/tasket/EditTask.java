@@ -235,6 +235,24 @@ public class EditTask extends AppCompatActivity implements DatePickerDialog.OnDa
                 }
             }
         });
+        findViewById(R.id.edit_collaborators).setOnClickListener(v -> {
+            String[] options = {"Search for user", "Search for team"};
+            AlertDialog.Builder builder = new AlertDialog.Builder(EditTask.this);
+            builder.setTitle("Add individuals or load from team?").setItems(options,
+                    (dialog, which) -> {
+                        switch (which) {
+                            case 0:
+                                Intent i = new Intent(EditTask.this, SearchForUserActivity.class);
+                                startActivityForResult(i, 5);
+                                break;
+                            case 1:
+                                // TODO stuff goes here
+                                break;
+                        }
+                    });
+            builder.show();
+        });
+
         setPriorityListener();
         setCategoryListener();
         recyclerView = findViewById(R.id.editCollabRecyc);
@@ -283,9 +301,6 @@ public class EditTask extends AppCompatActivity implements DatePickerDialog.OnDa
                             }
                         }
                     }
-                    System.out.println(emailList);
-                    System.out.println(imgList);
-                    System.out.println(nameList);
                     mAdapter = new CollabCardRecyclerAdapter(EditTask.this, nameList, imgList,
                             emailList);
                     recyclerView.setAdapter(mAdapter);
@@ -300,8 +315,10 @@ public class EditTask extends AppCompatActivity implements DatePickerDialog.OnDa
         });
 
 
-
     }
+
+    // Helper method to prompt dialog to add collaborators
+
 
     // Helper method to prompt an alert dialog for a user to enter their task name.
     // Task names are limited to 10 characters.

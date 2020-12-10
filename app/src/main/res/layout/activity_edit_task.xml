@@ -296,8 +296,8 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/editCollabRecyc"
-        android:layout_width="445dp"
-        android:layout_height="280dp"
+        android:layout_width="357dp"
+        android:layout_height="132dp"
         app:layout_constraintBottom_toBottomOf="@+id/imageView19"
         app:layout_constraintEnd_toEndOf="@+id/imageView19"
         app:layout_constraintStart_toStartOf="parent"
