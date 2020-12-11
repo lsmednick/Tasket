@@ -7,18 +7,18 @@
     tools:context=".SearchForUserActivity">
 
     <Button
-        android:id="@+id/searchButton"
+        android:id="@+id/teamSearchButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="12dp"
         android:text="Search"
-        app:layout_constraintBottom_toTopOf="@+id/saveBut"
+        app:layout_constraintBottom_toTopOf="@+id/teamSaveBut"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/saveBut"
+        android:id="@+id/teamSaveBut"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Save"
@@ -44,7 +44,7 @@
         android:layout_width="156dp"
         android:layout_height="152dp"
         android:layout_marginBottom="95dp"
-        app:layout_constraintBottom_toTopOf="@+id/searchButton"
+        app:layout_constraintBottom_toTopOf="@+id/teamSearchButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
