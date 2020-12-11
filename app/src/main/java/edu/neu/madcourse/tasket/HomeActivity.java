@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -43,10 +44,9 @@ public class HomeActivity extends AppCompatActivity {
         viewTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(HomeActivity.this, ViewTaskActivity.class);
+                Intent i = new Intent(HomeActivity.this, HourlyTaskActivity.class);
                 startActivity(i);
             }
         });
-
     }
 }

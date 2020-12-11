@@ -27,11 +27,15 @@ import java.util.HashMap;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    // views
+    //views
     EditText mEmailEt, mPasswordEt;
     Button mRegisterBtn;
     TextView mHaveAccountTv;
+
+    //progressbar to display while registering user
     ProgressDialog progressDialog;
+
+    //Declare an instance of FirebaseAuth
     private FirebaseAuth mAuth;
 
     @Override
@@ -41,43 +45,46 @@ public class RegisterActivity extends AppCompatActivity {
 
         //Actionbar and its title
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle("Create account");
-        // enable back button
+        actionBar.setTitle("Create Account");
+        //enable back button
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setDisplayShowHomeEnabled(true);
 
+        //init
         mEmailEt = findViewById(R.id.emailEt);
         mPasswordEt = findViewById(R.id.passwordEt);
         mRegisterBtn = findViewById(R.id.registerBtn);
         mHaveAccountTv = findViewById(R.id.have_accountTv);
 
+        //In the onCreate() method, initialize the FirebaseAuth instance.
         mAuth = FirebaseAuth.getInstance();
+
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Registering User...");
 
+
+        //handle register btn click
         mRegisterBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //input email, password
                 String email = mEmailEt.getText().toString().trim();
                 String password = mPasswordEt.getText().toString().trim();
-
-                // validate
+                //validate
                 if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                    mEmailEt.setError("Invalid email");
+                    //set error and focuss to email edittext
+                    mEmailEt.setError("Invalid Email");
                     mEmailEt.setFocusable(true);
-                }
-                else if (password.length()<6) {
-                    mPasswordEt.setError("Password must be at least 6 characters");
+                } else if (password.length() < 6) {
+                    //set error and focuss to password edittext
+                    mPasswordEt.setError("Password length at least 6 characters");
                     mPasswordEt.setFocusable(true);
+                } else {
+                    registerUser(email, password); //register the user
                 }
-                else {
-                    registerUser(email, password);
-                }
-
             }
         });
-
-        // handle login textview click listener
+        //handle login textview click listener
         mHaveAccountTv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -85,65 +92,69 @@ public class RegisterActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+
     }
 
     private void registerUser(String email, String password) {
+        //email and password pattern is valid, show progress dialog and start registering user
         progressDialog.show();
 
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()) {
-                    progressDialog.dismiss();
-                    FirebaseUser user = mAuth.getCurrentUser();
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, dismiss dialog and start register activity
+                            progressDialog.dismiss();
 
-                    // Get user email and uid from auth
-                    String email = user.getEmail();
-                    String uid = user.getUid();
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            //Get user email and uid from auth
+                            String email = user.getEmail();
+                            String uid = user.getUid();
+                            //When user is registered store user info in firebase realtime database too
+                            //using HashMap
+                            HashMap<Object, String> hashMap = new HashMap<>();
+                            //put info in hasmap
+                            hashMap.put("email", email);
+                            hashMap.put("uid", uid);
+                            hashMap.put("name", ""); //will add later (e.g. edit profile)
+                            hashMap.put("onlineStatus", "online"); //will add later (e.g. edit profile)
+                            hashMap.put("typingTo", "noOne"); //will add later (e.g. edit profile)
+                            hashMap.put("phone", ""); //will add later (e.g. edit profile)
+                            hashMap.put("image", ""); //will add later (e.g. edit profile)
+                            hashMap.put("cover", ""); //will add later (e.g. edit profile)
 
-                    // When user is registered store user info in firebase realtime database as well,
-                    // using HashMap
-                    HashMap<Object, String> hashMap = new HashMap<>();
+                            //firebase database isntance
+                            FirebaseDatabase database = FirebaseDatabase.getInstance();
+                            //path to store user data named "Users"
+                            DatabaseReference reference = database.getReference("Users");
+                            //put data within hashmap in database
+                            reference.child(uid).setValue(hashMap);
 
-                    // put info in hashmap
-                    hashMap.put("email", email);
-                    hashMap.put("uid", uid);
-                    hashMap.put("name", "");
-                    hashMap.put("phone", "");
-                    hashMap.put("image", "");
-                    hashMap.put("cover", "");
+                            Toast.makeText(RegisterActivity.this, "Registered...\n"+user.getEmail(), Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(RegisterActivity.this, DashboardActivity.class));
+                            finish();
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            progressDialog.dismiss();
+                            Toast.makeText(RegisterActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                        }
 
-                    // firebase database instance
-                    FirebaseDatabase database = FirebaseDatabase.getInstance();
-                    // path to store user data named "Users
-                    DatabaseReference reference = database.getReference("Users");
-                    // put data within hashmap in database
-                    reference.child(uid).setValue(hashMap);
-
-                    Toast.makeText(RegisterActivity.this, "Registered\n"+user.getEmail(), Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(RegisterActivity.this, DashboardActivity.class));
-                    finish();
-                }
-                else {
-                    progressDialog.dismiss();
-                    Toast.makeText(RegisterActivity.this, "Authentication failed.",
-                            Toast.LENGTH_SHORT).show();
-                }
-
-            }
-        }).addOnFailureListener(new OnFailureListener() {
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
+                //error, dismiss progress dialog and get and show the error message
                 progressDialog.dismiss();
-                Toast.makeText(RegisterActivity.this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(RegisterActivity.this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     @Override
     public boolean onSupportNavigateUp() {
-        onBackPressed();
+        onBackPressed(); // go previous activity
         return super.onSupportNavigateUp();
     }
 }

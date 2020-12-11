@@ -1,25 +1,28 @@
 package edu.neu.madcourse.tasket;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
-
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.zip.Inflater;
+import java.util.HashMap;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -34,11 +37,15 @@ public class tabMember extends Fragment {
     private static final String ARG_PARAM2 = "TYPE";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private String key;
+    private String type;
 
     private FirebaseDatabase database;
     private View myInflater;
+    private SimpleStringAdapter myAdapter;
+    private ArrayList<String> memberList;
+    private HashMap<String, String> myMap;
+    private RecyclerView memberRecycler;
 
     public tabMember() {
         // Required empty public constructor
@@ -67,8 +74,8 @@ public class tabMember extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            this.key = getArguments().getString(ARG_PARAM1);
+            this.type = getArguments().getString(ARG_PARAM2);
 
         }
     }
@@ -81,25 +88,96 @@ public class tabMember extends Fragment {
 
         this.myInflater = inflater.inflate(R.layout.fragment_tab_member, container, false);
 
+        this.myMap = new HashMap<>();
+        this.memberRecycler = myInflater.findViewById(R.id.fragment_recycler);
+        memberRecycler.setLayoutManager(new LinearLayoutManager(this.getContext(), LinearLayoutManager.VERTICAL, false));
+        this.myAdapter = new SimpleStringAdapter(myMap, this.getActivity(), DashboardActivity.class);
+        //TODO check destination activity validity with Clara
+        memberRecycler.setAdapter(this.myAdapter);
+
         getMembers();
+
+        FloatingActionButton fab = this.myInflater.findViewById(R.id.floatingActionButton_add_member);
+        fab.setOnClickListener(v -> {
+            //pop up dialog with text entry
+            AlertDialog.Builder alert = new AlertDialog.Builder(this.getContext());
+
+            alert.setTitle("Add Member");
+            alert.setMessage("Enter the email of the member you'd like to add below");
+
+            // Set an EditText view to get user input
+            final EditText input = new EditText(this.getContext());
+            alert.setView(input);
+
+            alert.setPositiveButton("Ok", (dialog, whichButton) -> {
+                String newMember = input.getText().toString();
+                addMember(newMember);
+            });
+
+            alert.setNegativeButton("Cancel", (dialog, whichButton) -> {
+                // Canceled.
+            });
+
+            alert.show();
+        });
+
 
         return myInflater;
     }
 
+    public void addMember(String newMember) {
+
+        // add user to adapter
+        Query query = this.database.getReference("Users").orderByChild("email").equalTo(newMember);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    for (DataSnapshot postSnap : snapshot.getChildren()) {
+                        String name = postSnap.child("name").getValue().toString();
+                        String key = postSnap.getKey();
+                        addMemberDB(key);
+                        if (name == null || name.equals("")) {
+                            name = newMember;
+                        }
+                        System.out.println(name);
+                        myMap.put(name, key);
+                    }
+                }
+                myAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(getContext(), "could not add user", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void addMemberDB(String key) {
+        //add user to team's associated_members
+        DatabaseReference teamRef = this.database.getReference(type + "/" + this.key + "/associated_members");
+        teamRef.child(key).setValue(true);
+
+        //add team to user's teams
+        DatabaseReference userRef = this.database.getReference("Users/" + key + "/" + type);
+        userRef.child(this.key).setValue(true);
+    }
+
     public void getMembers() {
-        ArrayList<String> memberList = new ArrayList<>();
-        DatabaseReference myRef = this.database.getReference("teams/" + mParam1);
-        myRef.addValueEventListener(new ValueEventListener() {
+        ArrayList<String> memberKeys = new ArrayList<>();
+        DatabaseReference teamRef = this.database.getReference(this.type + "/" + this.key);
+        teamRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot postSnap : snapshot.getChildren()) {
-                    System.out.println("KEY: " + postSnap.getKey() + " VALUE: " + postSnap.getValue() + " TYPE: " + postSnap.getValue().getClass());
                     if (postSnap.getKey().equals("associated_members")) {
-                        memberList.addAll((ArrayList<String>) postSnap.getValue());
-
+                        for (DataSnapshot childSnap : postSnap.getChildren()) {
+                            memberKeys.add(childSnap.getKey());
+                        }
                     }
                 }
-                setRecycler(memberList);
+                makeMap(memberKeys);
             }
 
             @Override
@@ -109,10 +187,32 @@ public class tabMember extends Fragment {
         });
     }
 
-    public void setRecycler(ArrayList<String> myMembers) {
-        System.out.println(myMembers);
-        RecyclerView memberRecycler = myInflater.findViewById(R.id.fragment_recycler);
-        memberRecycler.setLayoutManager(new LinearLayoutManager(this.getContext(), LinearLayoutManager.VERTICAL, false));
-        memberRecycler.setAdapter(new SimpleStringAdapter(myMembers));
+    private void makeMap(ArrayList<String> keys) {
+        this.myMap = new HashMap<>();
+        for (String key : keys) {
+            DatabaseReference myref = this.database.getReference("Users/" + key);
+            myref.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()) {
+                        String name = snapshot.child("name").getValue().toString();
+                        if (name == null || name.equals("")) {
+                            name = snapshot.child("email").getValue().toString();
+                        }
+                        myMap.put(name, key);
+                    }
+                    System.out.println("MEMBERS: " + myMap.toString());
+
+                    memberRecycler.setAdapter(new SimpleStringAdapter(myMap, getActivity(), OtherProfileFragment.class));
+                    System.out.println(myAdapter.getItemCount());
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+        }
     }
+
 }

@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -26,7 +28,7 @@ import java.util.Objects;
 public class ViewTasksActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private RecyclerView.Adapter mAdapter;
-    private RecyclerView.LayoutManager layoutManager;
+    private LinearLayoutManager layoutManager;
     private final ArrayList<String> names = new ArrayList<>();
     private final ArrayList<String> types = new ArrayList<>();
     private final ArrayList<String> images = new ArrayList<>();
@@ -44,23 +46,36 @@ public class ViewTasksActivity extends AppCompatActivity {
         FirebaseUser user = mAuth.getCurrentUser();
         uid = Objects.requireNonNull(user).getUid();
         fab = findViewById(R.id.view_tasks_fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new Thread(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        Intent i = new Intent(ViewTasksActivity.this, EditTask.class);
-                        i.putExtra("isNewTask", true);
-                        startActivity(i);
-                    }
-                }).start();
-            }
+        fab.setOnClickListener(v -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Choose Task Type\n(This cannot be changed later)").setItems(R.array.taskTypes,
+                    (dialog, which) -> {
+                        switch (which) {
+                            case 0:
+                                new Thread(() -> {
+                                    Intent i = new Intent(ViewTasksActivity.this, EditTask.class);
+                                    i.putExtra("isNewTask", true);
+                                    i.putExtra("taskID", "none");
+                                    startActivity(i);
+                                }).start();
+                                break;
+                            case 1:
+                                new Thread(() -> {
+                                    Intent i = new Intent(ViewTasksActivity.this, HourlyTaskActivity.class);
+                                    i.putExtra("isNewTask", true);
+                                    i.putExtra("taskID", "none");
+                                    startActivity(i);
+                                }).start();
+                                break;
+                        }
+                    });
+            builder.show();
         });
-        recyclerView = (RecyclerView) findViewById(R.id.taskRecyclerView);
+        recyclerView = findViewById(R.id.taskRecyclerView);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
+        layoutManager.setReverseLayout(true);
+        layoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(layoutManager);
     }
 
@@ -147,7 +162,7 @@ public class ViewTasksActivity extends AppCompatActivity {
                         deadlines.add(month + "/" + day + "/" + year);
                     }
                     mAdapter = new TaskCardRecyclerAdapter(ViewTasksActivity.this, names, deadlines, images,
-                            categories, priorities, types);
+                            categories, priorities, types, taskIDs);
                     recyclerView.setAdapter(mAdapter);
                 }
             }
