@@ -103,6 +103,8 @@ public class tabTask extends Fragment {
                                     Intent i = new Intent(getContext(), EditTask.class);
                                     i.putExtra("isNewTask", true);
                                     i.putExtra("taskID", "none");
+                                    i.putExtra("teamType", this.type);
+                                    i.putExtra("teamKey", this.key);
                                     startActivity(i);
                                 }).start();
                                 break;
@@ -111,6 +113,8 @@ public class tabTask extends Fragment {
                                     Intent i = new Intent(getContext(), HourlyTaskActivity.class);
                                     i.putExtra("isNewTask", true);
                                     i.putExtra("taskID", "none");
+                                    i.putExtra("teamType", this.type);
+                                    i.putExtra("teamKey", this.key);
                                     startActivity(i);
                                 }).start();
                                 break;

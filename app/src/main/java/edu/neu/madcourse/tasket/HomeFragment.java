@@ -102,7 +102,7 @@ public class HomeFragment extends Fragment {
 
         TextView quoteView = myInflater.findViewById(R.id.quote_placement);
 
-        quoteView.setText(getQuote());
+        //quoteView.setText(getQuote());
 
 
         return myInflater;

@@ -1,24 +1,17 @@
 package edu.neu.madcourse.tasket;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.text.InputFilter;
+import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
@@ -28,11 +21,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.chip.Chip;
-import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -74,9 +72,9 @@ public class EditTask extends AppCompatActivity implements DatePickerDialog.OnDa
     private RecyclerView recyclerView;
     private RecyclerView.Adapter mAdapter;
     private LinearLayoutManager layoutManager;
-    private ArrayList<String> emailList = new ArrayList<>();
-    private ArrayList<String> nameList = new ArrayList<>();
-    private ArrayList<String> imgList = new ArrayList<>();
+    private final ArrayList<String> emailList = new ArrayList<>();
+    private final ArrayList<String> nameList = new ArrayList<>();
+    private final ArrayList<String> imgList = new ArrayList<>();
     //storage
     StorageReference storageReference;
     //permissions constants
@@ -89,6 +87,8 @@ public class EditTask extends AppCompatActivity implements DatePickerDialog.OnDa
     String[] storagePermissions;
     //uri of picked image
     Uri image_uri;
+    private String teamType;
+    private String teamKey;
 
 
     @Override
@@ -101,6 +101,9 @@ public class EditTask extends AppCompatActivity implements DatePickerDialog.OnDa
         database = FirebaseDatabase.getInstance();
         mAuth = FirebaseAuth.getInstance();
         isNewTask = getIntent().getBooleanExtra("isNewTask", false);
+        this.teamType = getIntent().getStringExtra("teamType");
+        this.teamKey = getIntent().getStringExtra("teamKey");
+
         storageReference = getInstance().getReference(); //firebase storage reference
         DatabaseReference tasksRef = database.getReference("tasks");
         taskId = tasksRef.push().getKey();
@@ -121,7 +124,28 @@ public class EditTask extends AppCompatActivity implements DatePickerDialog.OnDa
             taskCategory = "work";
             taskPicture = "https://firebasestorage.googleapis.com/v0/b/tasket-bf4b2.appspot.com/o/Task_Images%2Ftasket_logo.png?alt=media&token=2501c751-14cf-4491-8fe8-02c945221b83";
             status = "in progress";
-            collabs.put(uid, true);
+            if (this.teamType != null) {
+                DatabaseReference teamRef = this.database.getReference(teamType + "/" +
+                        teamKey + "/associated_members");
+                teamRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        Log.i("EDIT TASK>>>>>>>>>>>>", "snapshot: " + snapshot.getKey());
+                        for (DataSnapshot postSnap : snapshot.getChildren()) {
+                            collabs.put(postSnap.getKey(), true);
+                            Log.i("EDIT TASK>>>>>>>>>>>>", "key " + postSnap.getKey());
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+            } else {
+                collabs.put(uid, true);
+            }
+            Log.i("EDIT TASK>>>>>>>>>>", collabs.toString());
             deadlineYear = Calendar.getInstance().get(Calendar.YEAR);
             yearView.setText(String.valueOf(deadlineYear));
             deadlineMonth = Calendar.getInstance().get(Calendar.MONTH);
@@ -230,7 +254,7 @@ public class EditTask extends AppCompatActivity implements DatePickerDialog.OnDa
             finish();
         });
         findViewById(R.id.editPhoto).setOnClickListener(v -> showImagePicDialog());
-        ToggleButton tog = (ToggleButton) findViewById(R.id.toggleButton);
+        ToggleButton tog = findViewById(R.id.toggleButton);
         tog.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -653,6 +677,12 @@ public class EditTask extends AppCompatActivity implements DatePickerDialog.OnDa
             // userRef.child(taskId).setValue(true);
         } else {
             tasksRef.child(getIntent().getStringExtra("taskID")).updateChildren(taskData);
+        }
+
+        if (this.teamKey != null) {
+            // add to team
+            DatabaseReference teamRef = this.database.getReference(this.teamType + "/" + this.teamKey + "/tasks");
+            teamRef.child(taskId).setValue(true);
         }
     }
 
