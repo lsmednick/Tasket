@@ -2,6 +2,7 @@ package edu.neu.madcourse.tasket;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -9,11 +10,23 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Random;
+import java.util.stream.Stream;
 
 
 /**
@@ -30,6 +43,8 @@ public class HomeFragment extends Fragment {
     private static final String ARG_PARAM2 = "";
     String mParam1;
     String mParam2;
+    private FirebaseStorage storage;
+
 
     public HomeFragment() {
         // Required empty public constructor
@@ -71,6 +86,7 @@ public class HomeFragment extends Fragment {
 
         //init
         firebaseAuth = FirebaseAuth.getInstance();
+        this.storage = FirebaseStorage.getInstance();
 
         Button to_teams = myInflater.findViewById(R.id.view_teams);
         to_teams.setOnClickListener(v -> {
@@ -84,19 +100,74 @@ public class HomeFragment extends Fragment {
             startActivity(intent);
         });
 
+        TextView quoteView = myInflater.findViewById(R.id.quote_placement);
+
+        quoteView.setText(getQuote());
+
+
         return myInflater;
     }
 
 
-    private void checkUserStatus(){
+    private String getQuote() {
+        Random r = new Random();
+        int lower = 1;
+        int upper = 1492;
+        int randInt = r.nextInt(upper - lower) + lower;
+        String myLine = null;
+        String quote = "Always do your best. What you plant now, you will harvest later";
+        String author = "Og Mandino";
+
+        StorageReference storageReference = this.storage
+                .getReferenceFromUrl("https://firebasestorage.googleapis.com/v0/b/tasket-bf4" +
+                        "b2.appspot.com/o/quotes?alt=media&token=bc568d44-9ae0-49f1-a084-8aa642ec9c4a");
+
+        File localFile;
+        try {
+            localFile = File.createTempFile("quotes", "txt");
+        } catch (IOException e) {
+            localFile = null;
+        }
+        String[] splitLines;
+        storageReference.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+            }
+        });
+        splitLines = new String[2];
+
+
+        try {
+            Stream<String> lines = Files.lines(Paths.get(localFile.getAbsolutePath()));
+            Log.i("FILE>>>>>>>>>", lines.toString());
+
+            Log.i("FILE>>>>>>>>>>> ", String.valueOf(lines.skip(randInt).findFirst().isPresent()));
+
+            splitLines = lines.skip(randInt).findFirst().get().split("\",\"");
+            Log.i("FILE>>>>>>>>>>>>>", splitLines.toString());
+
+        } catch (IOException e) {
+            Log.i("FILE>>>>>>>>>>", "failed");
+        }
+
+
+        if (splitLines != null) {
+            author = splitLines[0].replaceAll("\"", "");
+            quote = splitLines[1].replaceAll("\"", "");
+        }
+
+        return "\"" + quote + "\"  -" + author;
+    }
+
+
+    private void checkUserStatus() {
         //get current user
         FirebaseUser user = firebaseAuth.getCurrentUser();
-        if (user != null){
+        if (user != null) {
             //user is signed in stay here
             //set email of logged in user
             //mProfileTv.setText(user.getEmail());
-        }
-        else {
+        } else {
             //user not signed in, go to main acitivity
             startActivity(new Intent(getActivity(), MainActivity.class));
             getActivity().finish();
@@ -117,7 +188,7 @@ public class HomeFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         //get item id
         int id = item.getItemId();
-        if (id == R.id.action_logout){
+        if (id == R.id.action_logout) {
             firebaseAuth.signOut();
             checkUserStatus();
         }
