@@ -47,7 +47,6 @@ public class SimpleStringAdapter extends RecyclerView.Adapter<SimpleStringAdapte
         this.myPA = null;
         this.myVP = null;
 
-
         if (mydata.size() == 0) {
             mydata.add("click to add!");
         }

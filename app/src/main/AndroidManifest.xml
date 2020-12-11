@@ -7,7 +7,6 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -16,16 +15,20 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Tasket">
 
-
         <activity android:name=".ChatActivity"
             android:theme="@style/AppThemeNo"/>
-        <activity android:name=".LoginActivity" />
+        <activity android:name=".OtherProfileFragment" />
+        <activity android:name=".SearchForUserActivity"></activity>
+        <activity android:name=".HourlyLog" />
         <activity android:name=".DashboardActivity" />
-        <activity android:name=".ViewTaskActivity" />
+        <activity android:name=".EditTask" />
+        <activity android:name=".ViewTasksActivity" />
+        <activity android:name=".ForgotPasswordActivity" />
+        <activity android:name=".HourlyTaskActivity" />
         <activity android:name=".HomeActivity" />
         <activity android:name=".ViewTeams" />
         <activity android:name=".ViewTeam" />
-        <activity android:name=".OtherProfileFragment" />
+        <activity android:name=".LoginActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

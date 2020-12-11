@@ -59,7 +59,6 @@ public class PageAdapter extends FragmentPagerAdapter {
         }
 
         switch (position) {
-
             case 0:
                 myFrag = new tabTask();
                 break;
@@ -123,5 +122,5 @@ public class PageAdapter extends FragmentPagerAdapter {
         System.out.println("privs: " + this.userprivileges);
 
     }
-
+  
 }

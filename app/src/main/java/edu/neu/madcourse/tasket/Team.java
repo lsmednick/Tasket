@@ -25,7 +25,7 @@ public class Team {
         this.teamName = "";
         //this.tasks = new ArrayList<Task>();
     }
-
+  
 
     public Map<String, Boolean> getAssociated_members() {
 

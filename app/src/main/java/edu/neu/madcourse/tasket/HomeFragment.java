@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link HomeFragment#newInstance} factory method to
@@ -59,6 +60,7 @@ public class HomeFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
     }
 
     @Override
@@ -70,10 +72,15 @@ public class HomeFragment extends Fragment {
         //init
         firebaseAuth = FirebaseAuth.getInstance();
 
-
         Button to_teams = myInflater.findViewById(R.id.view_teams);
         to_teams.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), ViewTeams.class);
+            startActivity(intent);
+        });
+
+        Button to_tasks = myInflater.findViewById(R.id.view_tasks_button);
+        to_tasks.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), ViewTasksActivity.class);
             startActivity(intent);
         });
 
