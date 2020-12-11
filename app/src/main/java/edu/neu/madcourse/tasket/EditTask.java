@@ -131,6 +131,7 @@ public class EditTask extends AppCompatActivity implements DatePickerDialog.OnDa
             img.setImageResource(R.drawable.tasket_logo);
         } else {
             String tID = getIntent().getStringExtra("taskID");
+            taskId = tID;
             DatabaseReference taskRef = FirebaseDatabase.getInstance().getReference("tasks/" +
                     tID);
             taskRef.addValueEventListener(new ValueEventListener() {
@@ -251,7 +252,8 @@ public class EditTask extends AppCompatActivity implements DatePickerDialog.OnDa
                                 startActivityForResult(i, 5);
                                 break;
                             case 1:
-                                // TODO stuff goes here
+                                Intent g = new Intent(EditTask.this, SearchForTeamActivity.class);
+                                startActivityForResult(g, 5);
                                 break;
                         }
                     });

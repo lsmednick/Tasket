@@ -18,7 +18,8 @@
         <activity android:name=".ChatActivity"
             android:theme="@style/AppThemeNo"/>
         <activity android:name=".OtherProfileFragment" />
-        <activity android:name=".SearchForUserActivity"></activity>
+        <activity android:name=".SearchForTeamActivity"></activity>
+        <activity android:name=".SearchForUserActivity" />
         <activity android:name=".HourlyLog" />
         <activity android:name=".DashboardActivity" />
         <activity android:name=".EditTask" />
