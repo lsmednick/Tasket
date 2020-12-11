@@ -192,7 +192,7 @@ public class tabSubteam extends Fragment {
         ref.child(pushID.getKey()).setValue(true);
 
         // add user to subteam's members
-        DatabaseReference subRef = this.database.getReference("subteams/" + pushID.getKey() + "/associated_memebers");
+        DatabaseReference subRef = this.database.getReference("subteams/" + pushID.getKey() + "/associated_members");
         subRef.child(CURRENT_USER_KEY).setValue(true);
 
         // add user as manager of subteam
