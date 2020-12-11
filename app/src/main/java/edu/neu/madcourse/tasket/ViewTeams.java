@@ -1,13 +1,16 @@
 package edu.neu.madcourse.tasket;
 
+import android.app.Activity;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.Bundle;
+import android.widget.EditText;
+
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -19,14 +22,17 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 public class ViewTeams extends AppCompatActivity {
 
+    private static final String CURRENT_USER_KEY = FirebaseAuth.getInstance().getUid();
     private RecyclerView team_name_recycler;
     private FloatingActionButton add_team_fab;
     private FirebaseDatabase database;
     private FirebaseAuth mAuth;
+    private final Activity thisActivity = this;
+    private HashMap<String, String> myMap;
+    private SimpleStringAdapter myAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,8 +42,13 @@ public class ViewTeams extends AppCompatActivity {
         this.mAuth = FirebaseAuth.getInstance();
         this.database = FirebaseDatabase.getInstance();
 
+        this.myMap = new HashMap<>();
+        this.team_name_recycler = findViewById(R.id.view_teams_recycler);
+        this.myAdapter = new SimpleStringAdapter(this.myMap, this, ViewTeam.class);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
+        team_name_recycler.setLayoutManager(layoutManager);
+        team_name_recycler.setAdapter(myAdapter);
 
-        setUpData();
         //tempsetup();
 
         //initialize on screen views
@@ -45,65 +56,79 @@ public class ViewTeams extends AppCompatActivity {
 
         //set on click for new team
         add_team_fab.setOnClickListener(v -> {
-            //TODO go to create team
+            //pop up dialog with text entry
+            Activity myActivity = this.thisActivity;
+            AlertDialog.Builder alert = new AlertDialog.Builder(this);
+
+            alert.setTitle("Create Team");
+            alert.setMessage("Enter the team name");
+
+            // Set an EditText view to get user input
+            final EditText input = new EditText(this);
+            alert.setView(input);
+
+            alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int whichButton) {
+                    String newTeam = input.getText().toString();
+                    Intent intent = new Intent(myActivity, ViewTeam.class);
+                    String teamKey = createTeam(newTeam);
+                    intent.putExtra("TEAM_KEY", teamKey);
+                    intent.putExtra("TEAM_TYPE", "teams");
+                    startActivity(intent);
+
+                }
+            });
+
+            alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int whichButton) {
+                    // Canceled.
+                }
+            });
+
+            alert.show();
         });
 
 
+        setUpData();
+    }
+
+    private String createTeam(String teamName) {
+        // add team to database
+        DatabaseReference teamRef = this.database.getReference("teams");
+        DatabaseReference pushID = teamRef.push();
+        pushID.child("teamName").setValue(teamName);
+
+        // add team to user
+        DatabaseReference newRef = this.database.getReference("Users/" + CURRENT_USER_KEY + "/" + "teams");
+        newRef.child(pushID.getKey()).setValue(true);
+
+        // add user as member of team
+        DatabaseReference memberRef = this.database.getReference("teams/" + pushID.getKey() + "/associated_members");
+        memberRef.child(CURRENT_USER_KEY).setValue(true);
+
+        // add user as manager of subteam
+        DatabaseReference manRef = this.database.getReference("teams/" + pushID.getKey() + "/permissions");
+        manRef.child(CURRENT_USER_KEY).setValue(true);
+
+        // add subteam to user's privileges
+        DatabaseReference uRef = this.database.getReference("Users/" + CURRENT_USER_KEY + "/privileges");
+        uRef.child(pushID.getKey()).setValue(true);
+
+        return pushID.getKey();
     }
 
     private void setUpData() {
         final String userKey = mAuth.getUid();
-        System.out.println("USER KEY:" + userKey);
-
-        //get list of all teams for user
-        DatabaseReference userTeams = database.getReference("Users/" + userKey);
-        HashMap<String, String> teamMap = new HashMap<>();
-        ArrayList<String> teamKeys = new ArrayList<>();
-        userTeams.addValueEventListener(new ValueEventListener() {
+        ArrayList<String> keys = new ArrayList<>();
+        DatabaseReference ref = this.database.getReference("Users/" + userKey + "/teams");
+        ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                teamKeys.clear();
-                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
-                    System.out.println("KEY : " + postSnapshot.getKey());
-                    System.out.println(postSnapshot.getKey().equals("teams"));
-                    if (postSnapshot.getKey().equals("teams")) {
-                        System.out.println("CHILDREN = " + snapshot.getChildrenCount());
-                        if (postSnapshot.getChildrenCount() > 0) {
-                            for (DataSnapshot childSnap : postSnapshot.getChildren()) {
-                                teamKeys.add(childSnap.getValue().toString());
-                                System.out.println("KEY VALUE = " + childSnap.getValue().toString());
-                            }
-                        }
-
-
-                        //teamKeys.add(postSnapshot.getValue().toString());
-
-                    }
+                keys.clear();
+                for (DataSnapshot postSnap : snapshot.getChildren()) {
+                    keys.add(postSnap.getKey());
                 }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.i("VIEWTEAMS", "user team data access failed");
-            }
-        });
-        System.out.println(teamKeys.toString());
-        DatabaseReference teamData = database.getReference("teams");
-        teamData.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
-                    System.out.println(postSnapshot.getKey());
-                    if (teamKeys.contains(postSnapshot.getKey())) {
-                        System.out.println("FOUND");
-                        String value = postSnapshot.getKey();
-                        String key = postSnapshot.child("teamName").getValue().toString();
-                        teamMap.put(key, value);
-                    }
-                }
-                System.out.println(teamMap.toString() + "\nSIZE: " + teamMap.size());
-
-                setRecycler(teamMap);
+                makeMap(keys);
             }
 
             @Override
@@ -113,16 +138,36 @@ public class ViewTeams extends AppCompatActivity {
         });
     }
 
-    public void setRecycler(Map<String, String> map) {
+    private void makeMap(ArrayList<String> keys) {
+        //this.myMap = new HashMap<String, String>();
+        for (String key : keys) {
+            DatabaseReference ref = this.database.getReference("teams/" + key);
+            ref.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()) {
+                        System.out.println("VIEW TEAMS   " + snapshot.toString());
+                        String name = snapshot.child("teamName").getValue().toString();
+                        myMap.put(name, key);
+                        System.out.println("VIEW TEAMS MAP: " + myMap.toString());
 
-        ArrayList<String> teamNames = new ArrayList<>(map.keySet());
-        System.out.println("ARRAY SIZE = " + teamNames.size());
-        team_name_recycler = findViewById(R.id.view_teams_recycler);
-        SimpleStringAdapter adapter = new SimpleStringAdapter(map, this, ViewTeam.class);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
-        team_name_recycler.setLayoutManager(layoutManager);
-        team_name_recycler.setAdapter(adapter);
-        System.out.println("ADAPTER SIZE = " + adapter.getItemCount());
+                    }
+                    System.out.println("MAP: " + myMap.size());
+                    team_name_recycler.setAdapter(new SimpleStringAdapter(myMap, thisActivity, ViewTeam.class));
+                    System.out.println("ADAPTER: " + myAdapter.getItemCount());
+                    System.out.println("MAP: " + myMap.size());
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+
+            });
+        }
+
+
     }
 
 

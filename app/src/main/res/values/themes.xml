@@ -14,12 +14,16 @@
         <!-- Customize your theme here. -->
     </style>
 
-    <style name="Theme.Tasket.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
+    <!--For activities containing toolbar-->
+    <!-- Theme Without ActionBar -->
+    <style name="AppThemeNo" parent="Theme.AppCompat.Light.NoActionBar">ß
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/blue_1</item>
+        <item name="colorPrimaryDark">@color/blue_3</item>
+        <item name="colorAccent">@color/green_3</item>
     </style>
 
-    <style name="Theme.Tasket.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
-    <style name="Theme.Tasket.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

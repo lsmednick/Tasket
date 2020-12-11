@@ -1,11 +1,15 @@
 package edu.neu.madcourse.tasket;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class Team {
-    private ArrayList<String> associated_members;
+    private Map<String, Boolean> associated_members;
     private ArrayList<Permission> permissions;
-    private ArrayList<Subteam> subteams;
+    private final HashMap<String, Boolean> subteams;
     private String teamName;
     //private ArrayList<Task> tasks;
     private String pushID;
@@ -15,37 +19,26 @@ public class Team {
      * and saved in the database.
      */
     public Team() {
-        this.associated_members = new ArrayList<String>();
+        this.associated_members = new HashMap<String, Boolean>();
         this.permissions = new ArrayList<Permission>();
-        this.subteams = new ArrayList<Subteam>();
+        this.subteams = new HashMap<String, Boolean>();
         this.teamName = "";
         //this.tasks = new ArrayList<Task>();
     }
+  
 
-    /**
-     * Existing team constructor.  Creates existing team object from information stored in DB
-     *
-     * @param members     ArrayList<String> member_username </String> representing all members of the team
-     * @param permissions ArrayList<Permission> permission objects </Permission> representing all permission levels of the team.
-     * @param subteams    ArrayList<Subteam> subteam objects </Subteam> representing all subteams associated with the team
-     * @param name        String representing the name of the team
-     *                    //@param tasks       ArrayList<Task> task object </Task> represents all tasks associated with the team at large (not subteams)
-     *                    TODO to be added later
-     */
-    public Team(ArrayList<String> members, ArrayList<Permission> permissions, ArrayList<Subteam> subteams, String name) {
-        this.associated_members = members;
-        this.permissions = permissions;
-        this.subteams = subteams;
-        this.teamName = name;
-        //this.tasks = tasks;
-    }
+    public Map<String, Boolean> getAssociated_members() {
 
-    public ArrayList<String> getAssociated_members() {
         return associated_members;
     }
 
-    public void setAssociated_members(ArrayList<String> associated_members) {
-        this.associated_members = associated_members;
+
+    public void setAssociated_members(ArrayList<String> members) {
+        HashMap<String, Boolean> myMembers = new HashMap<String, Boolean>();
+        for (String item : members) {
+            myMembers.put(item, true);
+        }
+        this.associated_members = myMembers;
     }
 
     public ArrayList<Permission> getPermissions() {
@@ -56,12 +49,14 @@ public class Team {
         this.permissions = permissions;
     }
 
-    public ArrayList<Subteam> getSubteams() {
+    public HashMap<String, Boolean> getSubteams() {
         return subteams;
     }
 
-    public void setSubteams(ArrayList<Subteam> subteams) {
-        this.subteams = subteams;
+    public void setSubteams(ArrayList<String> subteams) {
+        for (String item : subteams) {
+            this.subteams.put(item, true);
+        }
     }
 
     public String getTeamName() {

@@ -42,15 +42,17 @@ public class LoginActivity extends AppCompatActivity {
     private static final int RC_SIGN_IN = 100;
     GoogleSignInClient mGoogleSignInClient;
 
-    // views
+    //views
     EditText mEmailEt, mPasswordEt;
     TextView notHaveAccntTv, mRecoverPassTv;
     Button mLoginBtn;
     SignInButton mGoogleLoginBtn;
 
+    //Declare an instance of FirebaseAuth
     private FirebaseAuth mAuth;
-    ProgressDialog pd;
 
+    //progress dialog
+    ProgressDialog pd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,19 +62,22 @@ public class LoginActivity extends AppCompatActivity {
         //Actionbar and its title
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("Login");
-        // enable back button
+        //enable back button
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setDisplayShowHomeEnabled(true);
 
+
+        //before mAuth
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
-
         mGoogleSignInClient = GoogleSignIn.getClient(this,gso);
+        //In the onCreate() method, initialize the FirebaseAuth instance.
         mAuth = FirebaseAuth.getInstance();
 
+        //init
         mEmailEt = findViewById(R.id.emailEt);
         mPasswordEt = findViewById(R.id.passwordEt);
         notHaveAccntTv = findViewById(R.id.nothave_accountTv);
@@ -80,25 +85,25 @@ public class LoginActivity extends AppCompatActivity {
         mLoginBtn = findViewById(R.id.loginBtn);
         mGoogleLoginBtn = findViewById(R.id.googleLoginBtn);
 
-        // login button clicked
+        //login button click
         mLoginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // iinput data
+                //input data
                 String email = mEmailEt.getText().toString();
                 String passw = mPasswordEt.getText().toString().trim();
-                if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                    // invalid email pattern
-                    mEmailEt.setError("Invalid email");
+                if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
+                    //invalid email paatern set error
+                    mEmailEt.setError("Invalid Email");
                     mEmailEt.setFocusable(true);
                 }
                 else {
-                    // valid email pattern
+                    //valid email pattern
                     loginUser(email, passw);
                 }
             }
         });
-        // no account textView click
+        //not have accoun textview click
         notHaveAccntTv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -106,8 +111,7 @@ public class LoginActivity extends AppCompatActivity {
                 finish();
             }
         });
-
-        // recover password
+        //recover pass textview click
         mRecoverPassTv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -115,102 +119,107 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        // handle google login button clicked
+        //handle google login btn click
         mGoogleLoginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // begin google login process
+                //begin google login process
                 Intent signInIntent = mGoogleSignInClient.getSignInIntent();
                 startActivityForResult(signInIntent, RC_SIGN_IN);
             }
         });
-        // init progress dialog
+
+        //init progress dialog
         pd = new ProgressDialog(this);
     }
 
     private void showRecoverPasswordDialog() {
+        //AlertDialog
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Recover password");
-        // set layout linear layout
+        builder.setTitle("Recover Password");
 
+        //set layout linear layout
         LinearLayout linearLayout = new LinearLayout(this);
-        // views to set in dialog
-        EditText emailEt = new EditText(this);
+        //views to set in dialog
+        final EditText emailEt = new EditText(this);
         emailEt.setHint("Email");
         emailEt.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+        /*sets the min width of a EditView to fit a text of n 'M' letters regardless of the actual text
+        extension and text size.*/
         emailEt.setMinEms(16);
+
+
         linearLayout.addView(emailEt);
-        linearLayout.setPadding(10, 10, 10, 10);
+        linearLayout.setPadding(10,10,10,10);
 
         builder.setView(linearLayout);
 
-        // buttons recover
+        //buttons recover
         builder.setPositiveButton("Recover", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                // imput email
+                //input email
                 String email = emailEt.getText().toString().trim();
                 beginRecovery(email);
-
             }
         });
-        // buttons cancel
+        //buttons cancel
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                // dismiss dialog
+                //dismiss dialog
                 dialog.dismiss();
-
             }
         });
-        // show dialog
-        builder.create().show();
 
+        //show dialog
+        builder.create().show();
     }
 
     private void beginRecovery(String email) {
+        //show progresss dialog
         pd.setMessage("Sending email...");
         pd.show();
         mAuth.sendPasswordResetEmail(email)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                pd.dismiss();
-                if (task.isSuccessful()) {
-                    Toast.makeText(LoginActivity.this, "Email sent", Toast.LENGTH_SHORT).show();
-                }
-                else {
-                    Toast.makeText(LoginActivity.this, "Recovery failure...", Toast.LENGTH_SHORT).show();
-
-                }
-            }
-        }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        pd.dismiss();
+                        if (task.isSuccessful()){
+                            Toast.makeText(LoginActivity.this, "Email sent", Toast.LENGTH_SHORT).show();
+                        }
+                        else {
+                            Toast.makeText(LoginActivity.this, "Failed...", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
                 pd.dismiss();
+                //get and show proper error message
                 Toast.makeText(LoginActivity.this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
-
-
             }
         });
     }
 
     private void loginUser(String email, String passw) {
-        pd.setMessage("Logging in...");
+        //show progresss dialog
+        pd.setMessage("Logging In...");
         pd.show();
         mAuth.signInWithEmailAndPassword(email, passw)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            pd.dismiss();;
+                            //dismiss progress dialog
+                            pd.dismiss();
                             // Sign in success, update UI with the signed-in user's information
                             FirebaseUser user = mAuth.getCurrentUser();
-                            // user is logged in, so start LoginActivity
+                            //user is logged in, so start LoginActivity
                             startActivity(new Intent(LoginActivity.this, DashboardActivity.class));
                             finish();
-
                         } else {
+                            //dismiss progress dialog
                             pd.dismiss();
                             // If sign in fails, display a message to the user.
                             Toast.makeText(LoginActivity.this, "Authentication failed.",
@@ -220,7 +229,9 @@ public class LoginActivity extends AppCompatActivity {
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                // error, get and show error message
+                //dismiss progress dialog
+                pd.dismiss();
+                //error, get and show error message
                 Toast.makeText(LoginActivity.this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
@@ -228,7 +239,7 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     public boolean onSupportNavigateUp() {
-        onBackPressed();
+        onBackPressed(); // go previous activity
         return super.onSupportNavigateUp();
     }
 
@@ -263,51 +274,50 @@ public class LoginActivity extends AppCompatActivity {
 
                             FirebaseUser user = mAuth.getCurrentUser();
 
-                            // if user is signing in for the first time, then get and show user info
-                            // from google account.
-                            if (task.getResult().getAdditionalUserInfo().isNewUser()) {
-                                // Get user email and uid from auth
+                            //if user is signing in first time then get and show user info from google account
+                            if (task.getResult().getAdditionalUserInfo().isNewUser()){
+                                //Get user email and uid from auth
                                 String email = user.getEmail();
                                 String uid = user.getUid();
-
-                                // When user is registered store user info in firebase realtime database as well,
-                                // using HashMap
+                                //When user is registered store user info in firebase realtime database too
+                                //using HashMap
                                 HashMap<Object, String> hashMap = new HashMap<>();
-
-                                // put info in hashmap
+                                //put info in hasmap
                                 hashMap.put("email", email);
                                 hashMap.put("uid", uid);
-                                hashMap.put("name", "");
-                                hashMap.put("phone", "");
-                                hashMap.put("image", "");
-                                hashMap.put("cover", "");
-                                // firebase database instance
+                                hashMap.put("name", ""); //will add later (e.g. edit profile)
+                                hashMap.put("onlineStatus", "online"); //will add later (e.g. edit profile)
+                                hashMap.put("typingTo", "noOne"); //will add later (e.g. edit profile)
+                                hashMap.put("phone", ""); //will add later (e.g. edit profile)
+                                hashMap.put("image", ""); //will add later (e.g. edit profile)
+                                hashMap.put("cover", ""); //will add later (e.g. edit profile)
+                                //firebase database isntance
                                 FirebaseDatabase database = FirebaseDatabase.getInstance();
-                                // path to store user data named "Users
+                                //path to store user data named "Users"
                                 DatabaseReference reference = database.getReference("Users");
-                                // put data within hashmap in database
+                                //put data within hashmap in database
                                 reference.child(uid).setValue(hashMap);
-
                             }
-                            // show user email in toast
+                            //show user email in toast
                             Toast.makeText(LoginActivity.this, ""+user.getEmail(), Toast.LENGTH_SHORT).show();
+                            //go to profile activity after logged in
                             startActivity(new Intent(LoginActivity.this, DashboardActivity.class));
                             finish();
-                            // updateUI(user);
+                            //updateUI(user);
                         } else {
                             // If sign in fails, display a message to the user.
-                            Toast.makeText(LoginActivity.this, "Login failed", Toast.LENGTH_SHORT).show();
-
-                            // updateUI(null);
+                            Toast.makeText(LoginActivity.this, "Login Failed...", Toast.LENGTH_SHORT).show();
+                            //updateUI(null);
                         }
+
                     }
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                // get and show error message
+                //get and show error message
                 Toast.makeText(LoginActivity.this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
-
             }
         });
     }
+
 }

@@ -2,13 +2,19 @@ package edu.neu.madcourse.tasket;
 
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+
+import androidx.fragment.app.Fragment;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -17,14 +23,13 @@ import android.widget.Button;
  */
 public class HomeFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    //firebase auth
+    FirebaseAuth firebaseAuth;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private static final String ARG_PARAM1 = "";
+    private static final String ARG_PARAM2 = "";
+    String mParam1;
+    String mParam2;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -63,6 +68,10 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View myInflater = inflater.inflate(R.layout.fragment_home, container, false);
+
+        //init
+        firebaseAuth = FirebaseAuth.getInstance();
+
         Button to_teams = myInflater.findViewById(R.id.view_teams);
         to_teams.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), ViewTeams.class);
@@ -77,4 +86,43 @@ public class HomeFragment extends Fragment {
 
         return myInflater;
     }
+
+
+    private void checkUserStatus(){
+        //get current user
+        FirebaseUser user = firebaseAuth.getCurrentUser();
+        if (user != null){
+            //user is signed in stay here
+            //set email of logged in user
+            //mProfileTv.setText(user.getEmail());
+        }
+        else {
+            //user not signed in, go to main acitivity
+            startActivity(new Intent(getActivity(), MainActivity.class));
+            getActivity().finish();
+        }
+    }
+
+
+    /*inflate options menu*/
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        //inflating menu
+        inflater.inflate(R.menu.menu_main, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    /*handle menu item clicks*/
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        //get item id
+        int id = item.getItemId();
+        if (id == R.id.action_logout){
+            firebaseAuth.signOut();
+            checkUserStatus();
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
 }

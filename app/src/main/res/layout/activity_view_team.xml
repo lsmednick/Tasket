@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:background="@color/blue_2"
             android:text="  TextView"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/blue_3"
             android:textSize="36sp" />
 
         <com.google.android.material.tabs.TabLayout
