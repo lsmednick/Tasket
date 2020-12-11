@@ -32,11 +32,11 @@
 
             <TextView
                 android:id="@+id/collabName"
-                android:layout_width="41dp"
-                android:layout_height="20dp"
+                android:layout_width="149dp"
+                android:layout_height="24dp"
                 android:gravity="center"
                 android:text="Name"
-                android:textAllCaps="true"
+                android:textAllCaps="false"
                 android:textSize="14sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -51,6 +51,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="E-Mail"
+                android:textSize="12sp"
                 app:layout_constraintEnd_toEndOf="@+id/collabName"
                 app:layout_constraintStart_toStartOf="@+id/collabName"
                 app:layout_constraintTop_toBottomOf="@+id/collabName" />

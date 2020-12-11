@@ -16,6 +16,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.text.InputFilter;
 import android.view.View;
@@ -205,6 +206,10 @@ public class EditTask extends AppCompatActivity implements DatePickerDialog.OnDa
                                 if (status.equals("complete")) {
                                     tog.setChecked(true);
                                 }
+                            case "collaborators":
+                                for (DataSnapshot s : snap.getChildren()) {
+                                    collabs.put(s.getKey(), true);
+                            }
                         }
                     }
                     Picasso.get().load(taskPicture).into(img);
@@ -297,6 +302,7 @@ public class EditTask extends AppCompatActivity implements DatePickerDialog.OnDa
                                     break;
                                 case "name":
                                     nameList.add(map.get(str));
+                                    System.out.println(map.get(str));
                                     break;
                             }
                         }
@@ -498,7 +504,6 @@ public class EditTask extends AppCompatActivity implements DatePickerDialog.OnDa
                     }
                 }
 
-
             }
             break;
         }
@@ -541,6 +546,13 @@ public class EditTask extends AppCompatActivity implements DatePickerDialog.OnDa
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         /*This method will be called after picking image from Camera or Gallery*/
         if (resultCode == RESULT_OK) {
+
+            if (requestCode == 5 && data != null) {
+                String userToAdd = data.getStringExtra("whichuser");
+                if (!collabs.containsKey(userToAdd)) {
+                    collabs.put(userToAdd, true);
+                }
+            }
 
             if (requestCode == IMAGE_PICK_GALLERY_CODE) {
                 //image is picked from gallery, get uri of image
@@ -626,20 +638,23 @@ public class EditTask extends AppCompatActivity implements DatePickerDialog.OnDa
         taskData.put("priority", taskPriority);
         taskData.put("category", taskCategory);
         taskData.put("status", status);
+        taskData.put("collaborators", collabs);
 
-        HashMap<String, Object> collabData = new HashMap<>();
-        collabData.put(uid, true);
-
-        taskData.put("collaborators", collabData);
+        for (String collaborator : collabs.keySet()) {
+            DatabaseReference collabRef = database.getReference("Users/" + collaborator + "/tasks");
+            collabRef.child(taskId).setValue(true);
+        }
 
         if (isNewTask) {
             tasksRef.child(Objects.requireNonNull(taskId)).setValue(taskData);
             // Insert unique task ID into user section
-            userRef.child(taskId).setValue(true);
+            // userRef.child(taskId).setValue(true);
         } else {
             tasksRef.child(getIntent().getStringExtra("taskID")).updateChildren(taskData);
         }
     }
+
+
 
     private void updateTask() {
 

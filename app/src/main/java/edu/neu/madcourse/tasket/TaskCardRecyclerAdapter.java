@@ -75,7 +75,12 @@ public class TaskCardRecyclerAdapter extends RecyclerView.Adapter<TaskCardRecycl
         holder.priority.setText(priorityList.get(position));
         holder.category.setText(categoryList.get(position));
         holder.type.setText(typeList.get(position));
-        holder.id = taskIDList.get(position);
+        try {
+            holder.id = taskIDList.get(position);
+        } catch (IndexOutOfBoundsException e) {
+            System.out.println("out of bounds?");
+            System.out.println(taskIDList);
+        }
         holder.clicky.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

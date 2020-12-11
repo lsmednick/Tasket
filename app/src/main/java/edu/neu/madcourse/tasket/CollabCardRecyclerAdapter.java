@@ -55,6 +55,8 @@ public class CollabCardRecyclerAdapter extends RecyclerView.Adapter<CollabCardRe
     public void onBindViewHolder(@NonNull CollabCardRecyclerAdapter.MyViewHolder holder, int position) {
         if (!imgList.get(position).equals("")) {
             Picasso.get().load(imgList.get(position)).fit().into(holder.image);
+        } else {
+            holder.image.setImageResource(R.drawable.tasket_logo);
         }
         holder.name.setText(namesList.get(position));
         holder.email.setText(emailList.get(position));
