@@ -51,6 +51,7 @@ public class tabTask extends Fragment {
     private final ArrayList<String> deadlines = new ArrayList<>();
     private final ArrayList<String> categories = new ArrayList<>();
     private final ArrayList<String> priorities = new ArrayList<>();
+    private final ArrayList<String> status = new ArrayList<>();
 
     public tabTask() {
         // Required empty public constructor
@@ -185,7 +186,10 @@ public class tabTask extends Fragment {
                         for (String str : map.keySet()) {
                             switch (str) {
                                 case "category":
-                                    categories.add(map.get(str));
+                                    String t = map.get(str);
+                                    assert t != null;
+                                    String c = t.substring(0, 1).toUpperCase() + t.substring(1);
+                                    categories.add(c);
                                     break;
                                 case "deadlineDay":
                                     day = map.get(str);
@@ -205,17 +209,30 @@ public class tabTask extends Fragment {
                                     images.add(map.get(str));
                                     break;
                                 case "priority":
-                                    priorities.add(map.get(str));
+                                    String temp = map.get(str);
+                                    assert temp != null;
+                                    String cap = temp.substring(0, 1).toUpperCase() + temp.substring(1);
+                                    priorities.add(cap);
                                     break;
                                 case "type":
-                                    types.add(map.get(str));
+                                    String ugh = map.get(str);
+                                    assert ugh != null;
+                                    String ca = ugh.substring(0, 1).toUpperCase() + ugh.substring(1);
+                                    types.add(ca);
+                                    break;
+                                case "status":
+                                    if (Objects.equals(map.get(str), "in progress")) {
+                                        status.add("In Progress");
+                                    } else {
+                                        status.add("Complete!");
+                                    }
                                     break;
                             }
                         }
                         deadlines.add(month + "/" + day + "/" + year);
                     }
                     mAdapter = new TaskCardRecyclerAdapter(getContext(), names, deadlines, images,
-                            categories, priorities, types, taskIDs);
+                            categories, priorities, types, taskIDs, status);
                     recyclerView.setAdapter(mAdapter);
                 }
             }
