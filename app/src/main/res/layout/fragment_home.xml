@@ -18,32 +18,38 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:text="view teams"
+            app:layout_constraintBottom_toTopOf="@+id/imageView2"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.501"
+            app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/view_tasks_button"
+            app:layout_constraintTop_toBottomOf="@+id/view_tasks_button"
+            app:layout_constraintVertical_bias="0.0"
             tools:layout_constraintEnd_toEndOf="parent" />
 
         <Button
             android:id="@+id/view_tasks_button"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="296dp"
             android:text="@string/view_tasks"
+            app:layout_constraintBottom_toTopOf="@+id/imageView2"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/quote_placement"
+            app:layout_constraintVertical_bias="0.198" />
 
         <ImageView
             android:id="@+id/imageView2"
-            android:layout_width="289dp"
-            android:layout_height="225dp"
-            android:layout_marginBottom="4dp"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginBottom="28dp"
             android:src="@drawable/tasket_logo"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintHeight_percent="0.3"
+            app:layout_constraintHorizontal_bias="0.497"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintWidth_percent="0.5" />
 
         <TextView
             android:id="@+id/quote_placement"
@@ -57,72 +63,86 @@
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.192" />
+            app:layout_constraintVertical_bias="0.161" />
 
         <TextView
             android:id="@+id/textView2"
-            android:layout_width="78dp"
-            android:layout_height="133dp"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="376dp"
+            android:layout_width="77dp"
+            android:layout_height="62dp"
             android:fontFamily="sans-serif-light"
             android:text="Click here to view all of your tasks!"
             android:textAlignment="textStart"
+            app:layout_constraintBottom_toTopOf="@+id/textView4"
+            app:layout_constraintEnd_toEndOf="@+id/imageView6"
+            app:layout_constraintHorizontal_bias="0.583"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/imageView6"
+            app:layout_constraintVertical_bias="0.0" />
 
         <TextView
             android:id="@+id/textView3"
             android:layout_width="95dp"
             android:layout_height="119dp"
-            android:layout_marginTop="300dp"
-            android:layout_marginEnd="16dp"
             android:fontFamily="sans-serif-light"
             android:text="Click here to create teams with others to work together!"
             android:textAlignment="textEnd"
+            app:layout_constraintBottom_toBottomOf="@+id/imageView8"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintStart_toStartOf="@+id/imageView8" />
 
         <TextView
             android:id="@+id/textView4"
-            android:layout_width="127dp"
-            android:layout_height="190dp"
-            android:layout_marginStart="32dp"
+            android:layout_width="124dp"
+            android:layout_height="78dp"
             android:text="Build your profile and chat with friends using this toolbar!"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintBottom_toTopOf="@+id/imageView9"
+            app:layout_constraintStart_toStartOf="@+id/imageView9"
+            app:layout_constraintTop_toTopOf="@+id/imageView2"
+            app:layout_constraintVertical_bias="1.0" />
 
         <ImageView
             android:id="@+id/imageView6"
-            android:layout_width="64dp"
-            android:layout_height="58dp"
-            android:layout_marginStart="48dp"
-            android:layout_marginTop="304dp"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:src="@drawable/turn_right_arrow"
+            app:layout_constraintBottom_toTopOf="@+id/view_teams"
+            app:layout_constraintEnd_toStartOf="@+id/view_tasks_button"
+            app:layout_constraintHeight_percent="0.1"
+            app:layout_constraintHorizontal_bias="0.285"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0"
+            app:layout_constraintWidth_percent="0.18" />
 
         <ImageView
             android:id="@+id/imageView8"
-            android:layout_width="75dp"
-            android:layout_height="97dp"
-            android:layout_marginTop="352dp"
-            android:layout_marginEnd="36dp"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:src="@drawable/back_drawn_arrow"
+            app:layout_constraintBottom_toBottomOf="@+id/view_teams"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintHeight_percent="0.09"
+            app:layout_constraintHorizontal_bias="0.387"
+            app:layout_constraintStart_toEndOf="@+id/view_teams"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0"
+            app:layout_constraintWidth_percent="0.2" />
 
         <ImageView
             android:id="@+id/imageView9"
-            android:layout_width="164dp"
-            android:layout_height="101dp"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:layout_marginStart="7dp"
+            android:layout_marginBottom="4dp"
             android:src="@drawable/right_drawn_arrow"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintEnd_toStartOf="@+id/imageView2"
+            app:layout_constraintHeight_percent="0.16"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintWidth_percent="0.29" />
 
         <TextView
             android:id="@+id/textView5"

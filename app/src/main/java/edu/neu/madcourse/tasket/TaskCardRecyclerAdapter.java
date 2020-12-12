@@ -31,10 +31,10 @@ public class TaskCardRecyclerAdapter extends RecyclerView.Adapter<TaskCardRecycl
         public ImageView image, clicky;
         public MyViewHolder(View item) {
             super(item);
-            name = item.findViewById(R.id.cardName);
+            name = item.findViewById(R.id.hourlyCardHours);
             deadline = item.findViewById(R.id.cardDeadline);
             image = item.findViewById(R.id.cardImage);
-            category = item.findViewById(R.id.cardCategory);
+            category = item.findViewById(R.id.hourlyCardDate);
             priority = item.findViewById(R.id.cardPriority);
             type = item.findViewById(R.id.cardType);
             clicky = item.findViewById(R.id.clickyclik);
@@ -92,8 +92,12 @@ public class TaskCardRecyclerAdapter extends RecyclerView.Adapter<TaskCardRecycl
                         myContext.startActivity(i);
                     }).start();
                 } else {
-                    System.out.println("Hourly task go!");
-                    // TODO put stuff here
+                    new Thread(() -> {
+                        Intent i = new Intent(v.getContext(), HourlyTaskActivity.class);
+                        i.putExtra("isNewTask", false);
+                        i.putExtra("taskID", holder.id);
+                        myContext.startActivity(i);
+                    }).start();
                 }
             }
         });
