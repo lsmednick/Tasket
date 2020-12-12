@@ -2,6 +2,7 @@ package edu.neu.madcourse.tasket;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -179,8 +180,15 @@ public class ViewTeam extends AppCompatActivity {
 
     private void setGlobalPrivileges(ArrayList<String> privs, String key) {
         this.userprivileges = privs;
+        Log.i("VT>>>>>>", privs + "OUR KEY: " + key);
         if (!userprivileges.contains(key)) {
-            tabLayout.removeTabAt(3);
+            int index;
+            if (this.teamType.equals("subteams")) {
+                index = 2;
+            } else {
+                index = 3;
+            }
+            tabLayout.removeTabAt(index);
             this.tabLayout.setBackgroundColor(getResources().getColor(R.color.blue_2));
 
         }

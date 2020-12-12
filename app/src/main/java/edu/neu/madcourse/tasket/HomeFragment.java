@@ -14,19 +14,11 @@ import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Random;
-import java.util.stream.Stream;
 
 
 /**
@@ -44,6 +36,22 @@ public class HomeFragment extends Fragment {
     String mParam1;
     String mParam2;
     private FirebaseStorage storage;
+
+    String[] quotes = {"Excellence is not a skill. It is an attitude. -Ralph Marston",
+            "No yesterdays are ever wasted for those who give themselves to today. -Brendan Francis",
+            "Only those who dare to fail greatly can ever achieve greatly. -Robert Kennedy",
+            "The only limit to your impact is your imagination and commitment. -Tony Robbins",
+            "Anything you really want, you can attain, if you really go after it. -Wayne Dyer",
+            "A lot of times people look at the negative side of what they feel they can't do. I always look on the positive side of what I can do. -Chuck Norris",
+            "We must overcome the notion that we must be regular. It robs you of the chance to be extraordinary and leads you to the mediocre. -Uta Hagen",
+            "Most of the important things in the world have been accomplished by people who have kept on trying when there seemed to be no hope at all. -Dale Carnegie",
+            "Ability is what you're capable of doing. Motivation determines what you do.Attitude determines how well you do it. -Lou Holtz",
+            "Self-trust is the first secret of success. -Ralph Emerson",
+            "Can you imagine what I would do if I could do all I can? -Sun Tzu",
+            "Nothing diminishes anxiety faster than action. -Walter Anderson",
+            "Do not turn back when you are just at the goal. -Publilius Syrus",
+            "He can who thinks he can, and he can't who thinks he can't. This is an inexorable, indisputable law. -Pablo Picasso",
+            "When it is obvious that the goals cannot be reached, don't adjust the goals, adjust the action steps. -Confucius"};
 
 
     public HomeFragment() {
@@ -102,7 +110,7 @@ public class HomeFragment extends Fragment {
 
         TextView quoteView = myInflater.findViewById(R.id.quote_placement);
 
-        //quoteView.setText(getQuote());
+        quoteView.setText(getQuote());
 
 
         return myInflater;
@@ -111,52 +119,12 @@ public class HomeFragment extends Fragment {
 
     private String getQuote() {
         Random r = new Random();
-        int lower = 1;
-        int upper = 1492;
+        int lower = 0;
+        int upper = quotes.length - 1;
         int randInt = r.nextInt(upper - lower) + lower;
-        String myLine = null;
-        String quote = "Always do your best. What you plant now, you will harvest later";
-        String author = "Og Mandino";
-
-        StorageReference storageReference = this.storage
-                .getReferenceFromUrl("https://firebasestorage.googleapis.com/v0/b/tasket-bf4" +
-                        "b2.appspot.com/o/quotes?alt=media&token=bc568d44-9ae0-49f1-a084-8aa642ec9c4a");
-
-        File localFile;
-        try {
-            localFile = File.createTempFile("quotes", "txt");
-        } catch (IOException e) {
-            localFile = null;
-        }
-        String[] splitLines;
-        storageReference.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-            }
-        });
-        splitLines = new String[2];
-
-
-        try {
-            Stream<String> lines = Files.lines(Paths.get(localFile.getAbsolutePath()));
-            Log.i("FILE>>>>>>>>>", lines.toString());
-
-            Log.i("FILE>>>>>>>>>>> ", String.valueOf(lines.skip(randInt).findFirst().isPresent()));
-
-            splitLines = lines.skip(randInt).findFirst().get().split("\",\"");
-            Log.i("FILE>>>>>>>>>>>>>", splitLines.toString());
-
-        } catch (IOException e) {
-            Log.i("FILE>>>>>>>>>>", "failed");
-        }
-
-
-        if (splitLines != null) {
-            author = splitLines[0].replaceAll("\"", "");
-            quote = splitLines[1].replaceAll("\"", "");
-        }
-
-        return "\"" + quote + "\"  -" + author;
+        Log.i("?>?????????????????? ", String.valueOf(randInt));
+        String quote = quotes[randInt];
+        return quote;
     }
 
 
