@@ -25,6 +25,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -83,7 +84,7 @@ public class tabSubteam extends Fragment {
         this.database = FirebaseDatabase.getInstance();
         this.map = new HashMap<>();
 
-        //getSubteamData();
+
 
 
     }
@@ -93,7 +94,7 @@ public class tabSubteam extends Fragment {
         super.onResume();
 
 
-        getSubteamData();
+        //getSubteamData();
     }
 
     private void getSubteamData() {
@@ -118,7 +119,7 @@ public class tabSubteam extends Fragment {
                         map.put(name, postSnap.getKey());
 
                     }
-                    setMyAdapter(map);
+                    checkUser(map);
                 }
             }
 
@@ -130,13 +131,40 @@ public class tabSubteam extends Fragment {
 
     }
 
+    private void checkUser(HashMap<String, String> map) {
+        // get user subteams and filter map
+        ArrayList<String> userSubteams = new ArrayList<>();
+        DatabaseReference uref = this.database.getReference("Users/" + CURRENT_USER_KEY + "/subteams");
+        uref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot postsnap : snapshot.getChildren()) {
+                    userSubteams.add(postsnap.getKey());
+                }
+                ArrayList<String> remList = new ArrayList<>();
+                for (String mapkey : map.keySet()) {
+                    String mapValue = map.get(mapkey);
+                    if (!userSubteams.contains(mapValue)) {
+                        remList.add(mapkey);
+                    }
+                }
+                for (String key : remList) {
+                    map.remove(key);
+                }
+                setMyAdapter(map);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+
     private void setMyAdapter(HashMap<String, String> map) {
-        if (myRecycler != null) {
-            this.myAdapter = new SimpleStringAdapter(map, this.getActivity(), ViewTeam.class);
-            myRecycler.setAdapter(myAdapter);
-        } else {
-            myAdapter.notifyDataSetChanged();
-        }
+        myAdapter = new SimpleStringAdapter(map, getActivity(), ViewTeam.class);
+        myRecycler.setAdapter(myAdapter);
     }
 
     @Override
@@ -146,10 +174,10 @@ public class tabSubteam extends Fragment {
         this.myView = inflater.inflate(R.layout.fragment_tab_subteam, container, false);
 
 
-        RecyclerView myRecycler = myView.findViewById(R.id.subteam_recyclerview);
-        myRecycler.setLayoutManager(new LinearLayoutManager(this.getContext(), LinearLayoutManager.VERTICAL, false));
+        this.myRecycler = myView.findViewById(R.id.subteam_recyclerview);
+        this.myRecycler.setLayoutManager(new LinearLayoutManager(this.getContext(), LinearLayoutManager.VERTICAL, false));
         this.myAdapter = new SimpleStringAdapter(this.map, this.getActivity(), ViewTeam.class);
-        myRecycler.setAdapter(this.myAdapter);
+        getSubteamData();
 
 
         //TODO for recycler use the same logic as in viewteams-- its essentially the same thing but with keys from the team instead of the user
