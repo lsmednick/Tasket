@@ -62,7 +62,7 @@ public class UsersFragment extends Fragment {
 
         //init recyclerview
         recyclerView = view.findViewById(R.id.users_recyclerView);
-        //set it's properties
+        //set its properties
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
@@ -77,7 +77,7 @@ public class UsersFragment extends Fragment {
 
     private void getAllUsers() {
         //get current user
-        final FirebaseUser fUser = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         //get path of database named "Users" containing users info
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users");
         //get all data from path
@@ -89,9 +89,9 @@ public class UsersFragment extends Fragment {
                     ModelUser modelUser = ds.getValue(ModelUser.class);
 
                     //get all users except currently signed in user
-                     if (!modelUser.getUid().equals(fUser.getUid())) {
+                      if (!modelUser.getUid().equals(user.getUid())) {
                         userList.add(modelUser);
-                    }
+                     }
 
                     //adapter
                     adapterUsers = new AdapterUsers(getActivity(), userList);
