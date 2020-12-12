@@ -1,6 +1,7 @@
 package edu.neu.madcourse.tasket;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -46,6 +48,10 @@ public class tabMember extends Fragment {
     private ArrayList<String> memberList;
     private HashMap<String, String> myMap;
     private RecyclerView memberRecycler;
+    private ArrayList<String> userprivileges;
+    private FloatingActionButton fab;
+
+    final static String CURRENT_USER_KEY = FirebaseAuth.getInstance().getUid();
 
     public tabMember() {
         // Required empty public constructor
@@ -97,7 +103,7 @@ public class tabMember extends Fragment {
 
         getMembers();
 
-        FloatingActionButton fab = this.myInflater.findViewById(R.id.floatingActionButton_add_member);
+        this.fab = this.myInflater.findViewById(R.id.floatingActionButton_add_member);
         fab.setOnClickListener(v -> {
             //pop up dialog with text entry
             AlertDialog.Builder alert = new AlertDialog.Builder(this.getContext());
@@ -120,9 +126,44 @@ public class tabMember extends Fragment {
 
             alert.show();
         });
+        this.userprivileges = new ArrayList<String>();
+        userOwner(this.key);
 
 
         return myInflater;
+    }
+
+    private void userOwner(String teamkey) {
+
+        ArrayList<String> priv = new ArrayList<String>();
+        DatabaseReference userRef = this.database.getReference("Users/" + CURRENT_USER_KEY + "/privileges");
+        userRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot postSnap : snapshot.getChildren()) {
+                    priv.add(postSnap.getKey());
+                }
+                System.out.println(priv);
+                setGlobalPrivileges(priv, teamkey);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+    }
+
+    private void setGlobalPrivileges(ArrayList<String> privs, String key) {
+        this.userprivileges = privs;
+        Log.i("VT>>>>>>", privs + "OUR KEY: " + key);
+        if (!userprivileges.contains(key)) {
+            this.fab.hide();
+        }
+
+
     }
 
     public void addMember(String newMember) {
