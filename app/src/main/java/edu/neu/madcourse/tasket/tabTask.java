@@ -142,6 +142,7 @@ public class tabTask extends Fragment {
         this.deadlines.clear();
         this.categories.clear();
         this.priorities.clear();
+        this.status.clear();
     }
 
     @Override
@@ -153,6 +154,7 @@ public class tabTask extends Fragment {
         deadlines.clear();
         categories.clear();
         priorities.clear();
+        status.clear();
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         populateTaskList(database);
     }

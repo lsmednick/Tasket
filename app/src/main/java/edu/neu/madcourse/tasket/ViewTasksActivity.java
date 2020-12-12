@@ -89,6 +89,7 @@ public class ViewTasksActivity extends AppCompatActivity {
         deadlines.clear();
         categories.clear();
         priorities.clear();
+        status.clear();
     }
 
     @Override
@@ -100,6 +101,7 @@ public class ViewTasksActivity extends AppCompatActivity {
         deadlines.clear();
         categories.clear();
         priorities.clear();
+        status.clear();
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         populateTaskList(database);
     }
