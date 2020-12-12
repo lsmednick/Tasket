@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -82,9 +83,17 @@ public class tabSubteam extends Fragment {
         this.database = FirebaseDatabase.getInstance();
         this.map = new HashMap<>();
 
+        //getSubteamData();
+
+
+    }
+
+    public void onResume() {
+
+        super.onResume();
+
+
         getSubteamData();
-
-
     }
 
     private void getSubteamData() {
@@ -109,7 +118,7 @@ public class tabSubteam extends Fragment {
                         map.put(name, postSnap.getKey());
 
                     }
-                    myAdapter.notifyDataSetChanged();
+                    setMyAdapter(map);
                 }
             }
 
@@ -119,6 +128,15 @@ public class tabSubteam extends Fragment {
             }
         });
 
+    }
+
+    private void setMyAdapter(HashMap<String, String> map) {
+        if (myRecycler != null) {
+            this.myAdapter = new SimpleStringAdapter(map, this.getActivity(), ViewTeam.class);
+            myRecycler.setAdapter(myAdapter);
+        } else {
+            myAdapter.notifyDataSetChanged();
+        }
     }
 
     @Override
@@ -202,6 +220,7 @@ public class tabSubteam extends Fragment {
         // add subteam to user's privileges
         DatabaseReference uRef = this.database.getReference("Users/" + CURRENT_USER_KEY + "/privileges");
         uRef.child(pushID.getKey()).setValue(true);
+        Log.i("TAB SUB>>>>>>>>>", "added privileges to " + pushID.getKey());
 
         return pushID.getKey();
     }

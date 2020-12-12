@@ -14,31 +14,125 @@
 
         <Button
             android:id="@+id/view_teams"
-            android:layout_width="wrap_content"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
-            android:text="teams"
+            android:layout_marginTop="20dp"
+            android:text="view teams"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.501"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/view_tasks_button"
+            tools:layout_constraintEnd_toEndOf="parent" />
 
         <Button
             android:id="@+id/view_tasks_button"
-            android:layout_width="wrap_content"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="296dp"
             android:text="@string/view_tasks"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="289dp"
+            android:layout_height="225dp"
+            android:layout_marginBottom="4dp"
+            android:src="@drawable/tasket_logo"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/view_teams"
-            app:layout_constraintVertical_bias="0.067" />
+            app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
             android:id="@+id/quote_placement"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:maxWidth="200dp"
+            android:fontFamily="sans-serif-black"
+            android:lineSpacingMultiplier="1.7"
+            android:maxWidth="300dp"
             android:text="TextView"
+            android:textAlignment="center"
+            android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.192" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="78dp"
+            android:layout_height="133dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="376dp"
+            android:fontFamily="sans-serif-light"
+            android:text="Click here to view all of your tasks!"
+            android:textAlignment="textStart"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="95dp"
+            android:layout_height="119dp"
+            android:layout_marginTop="300dp"
+            android:layout_marginEnd="16dp"
+            android:fontFamily="sans-serif-light"
+            android:text="Click here to create teams with others to work together!"
+            android:textAlignment="textEnd"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="127dp"
+            android:layout_height="190dp"
+            android:layout_marginStart="32dp"
+            android:text="Build your profile and chat with friends using this toolbar!"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageView
+            android:id="@+id/imageView6"
+            android:layout_width="64dp"
+            android:layout_height="58dp"
+            android:layout_marginStart="48dp"
+            android:layout_marginTop="304dp"
+            android:src="@drawable/turn_right_arrow"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/imageView8"
+            android:layout_width="75dp"
+            android:layout_height="97dp"
+            android:layout_marginTop="352dp"
+            android:layout_marginEnd="36dp"
+            android:src="@drawable/back_drawn_arrow"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/imageView9"
+            android:layout_width="164dp"
+            android:layout_height="101dp"
+            android:layout_marginStart="7dp"
+            android:src="@drawable/right_drawn_arrow"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:fontFamily="sans-serif-medium"
+            android:text="Welcome to Tasket!"
+            android:textColor="@color/blue_3"
+            android:textSize="24sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
