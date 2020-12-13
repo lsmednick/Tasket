@@ -17,6 +17,7 @@ import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -47,6 +48,8 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Objects;
 
+import edu.neu.madcourse.tasket.notifications.Data;
+
 import static com.google.firebase.storage.FirebaseStorage.getInstance;
 
 public class EditTask extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
@@ -60,6 +63,7 @@ public class EditTask extends AppCompatActivity implements DatePickerDialog.OnDa
     private String taskPicture;
     private String status;
     private String uid;
+    private String hasTeam;
     private HashMap<String, Object> collabs;
     TextView yearView;
     TextView monthView;
@@ -95,6 +99,7 @@ public class EditTask extends AppCompatActivity implements DatePickerDialog.OnDa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_task);
+        hasTeam = "false";
         yearView = findViewById(R.id.year);
         monthView = findViewById(R.id.month);
         dayView = findViewById(R.id.date);
@@ -116,6 +121,9 @@ public class EditTask extends AppCompatActivity implements DatePickerDialog.OnDa
         cameraPermissions = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
         storagePermissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
+        DatabaseReference teamName = this.database.getReference(teamType + "/" + teamKey);
+        String hi = teamName.child("teamName").getKey();
+        System.out.println(hi);
         // Start with default values if this is a new task. Else populate task with databse values
         if (isNewTask) {
             taskName = "Task Name";
@@ -125,6 +133,7 @@ public class EditTask extends AppCompatActivity implements DatePickerDialog.OnDa
             taskPicture = "https://firebasestorage.googleapis.com/v0/b/tasket-bf4b2.appspot.com/o/Task_Images%2Ftasket_logo.png?alt=media&token=2501c751-14cf-4491-8fe8-02c945221b83";
             status = "in progress";
             if (this.teamType != null) {
+                hasTeam = "true";
                 DatabaseReference teamRef = this.database.getReference(teamType + "/" +
                         teamKey + "/associated_members");
                 teamRef.addValueEventListener(new ValueEventListener() {
@@ -155,6 +164,7 @@ public class EditTask extends AppCompatActivity implements DatePickerDialog.OnDa
             img.setImageResource(R.drawable.tasket_logo);
         } else {
             String tID = getIntent().getStringExtra("taskID");
+            taskId = tID;
             DatabaseReference taskRef = FirebaseDatabase.getInstance().getReference("tasks/" +
                     tID);
             taskRef.addValueEventListener(new ValueEventListener() {
@@ -230,10 +240,17 @@ public class EditTask extends AppCompatActivity implements DatePickerDialog.OnDa
                                 if (status.equals("complete")) {
                                     tog.setChecked(true);
                                 }
+                                break;
                             case "collaborators":
                                 for (DataSnapshot s : snap.getChildren()) {
                                     collabs.put(s.getKey(), true);
-                            }
+                                }
+                                break;
+                            case "hasTeam":
+                                String temp = (String) snap.getValue();
+                                if (temp.equals("true")) {
+                                    hasTeam = "true";
+                                }
                         }
                     }
                     Picasso.get().load(taskPicture).into(img);
@@ -265,21 +282,38 @@ public class EditTask extends AppCompatActivity implements DatePickerDialog.OnDa
             }
         });
         findViewById(R.id.edit_collaborators).setOnClickListener(v -> {
-            String[] options = {"Search for user", "Search for team"};
-            AlertDialog.Builder builder = new AlertDialog.Builder(EditTask.this);
-            builder.setTitle("Add individuals or load from team?").setItems(options,
-                    (dialog, which) -> {
-                        switch (which) {
-                            case 0:
-                                Intent i = new Intent(EditTask.this, SearchForUserActivity.class);
-                                startActivityForResult(i, 5);
-                                break;
-                            case 1:
-                                // TODO stuff goes here
-                                break;
-                        }
-                    });
-            builder.show();
+            if (hasTeam.equals("true")) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(EditTask.this);
+                builder.setTitle("Collaborators already set to team");
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                builder.show();
+            } else if (hasTeam.equals("false") && !isNewTask) {
+                Intent i = new Intent(EditTask.this, SearchForUserActivity.class);
+                startActivityForResult(i, 5);
+            } else {
+                String[] options = {"Search for user", "Select team"};
+                AlertDialog.Builder builder = new AlertDialog.Builder(EditTask.this);
+                builder.setTitle("Add user or create team task?\nThis can't be changed upon saving.").setItems(options,
+                        (dialog, which) -> {
+                            switch (which) {
+                                case 0:
+                                    Intent i = new Intent(EditTask.this, SearchForUserActivity.class);
+                                    startActivityForResult(i, 5);
+                                    break;
+                                case 1:
+                                    Intent g = new Intent(EditTask.this, ViewTeams.class);
+                                    startActivity(g);
+                                    finish();
+                                    break;
+                            }
+                        });
+                builder.show();
+            }
         });
 
         setPriorityListener();
@@ -512,15 +546,16 @@ public class EditTask extends AppCompatActivity implements DatePickerDialog.OnDa
                         Toast.makeText(this, "Please enable camera & storage permission", Toast.LENGTH_SHORT).show();
                     }
                 }
+                break;
             }
-            break;
             case STORAGE_REQUEST_CODE: {
 
                 //picking from galler, first check if storage permissions allowed or not
                 if (grantResults.length > 0) {
-                    boolean writeStorageAccepted = grantResults[1] == PackageManager.PERMISSION_GRANTED;
+                    boolean writeStorageAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
                     if (writeStorageAccepted) {
                         //permissions enabled
+                        System.out.println(">>>>>>>>>>>Set permission");
                         pickFromGallery();
                     } else {
                         //pemissions denied
@@ -663,6 +698,7 @@ public class EditTask extends AppCompatActivity implements DatePickerDialog.OnDa
         taskData.put("category", taskCategory);
         taskData.put("status", status);
         taskData.put("collaborators", collabs);
+        taskData.put("hasTeam", hasTeam);
 
         for (String collaborator : collabs.keySet()) {
             DatabaseReference collabRef = database.getReference("Users/" + collaborator + "/tasks");
@@ -683,7 +719,6 @@ public class EditTask extends AppCompatActivity implements DatePickerDialog.OnDa
             teamRef.child(taskId).setValue(true);
         }
     }
-
 
 
     private void updateTask() {

@@ -6,66 +6,15 @@
     android:layout_height="match_parent"
     tools:context=".ViewTasksActivity">
 
-    <com.google.android.material.chip.Chip
-        android:id="@+id/chip9"
-        android:layout_width="98dp"
-        android:layout_height="47dp"
-        app:layout_constraintBottom_toBottomOf="@+id/chip8"
-        app:layout_constraintEnd_toStartOf="@+id/chip6"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/chip8"
-        app:layout_constraintTop_toTopOf="@+id/chip8"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <com.google.android.material.chip.Chip
-        android:id="@+id/chip8"
-        android:layout_width="98dp"
-        android:layout_height="47dp"
-        android:layout_marginStart="64dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/chip7"
-        app:layout_constraintVertical_bias="0.6" />
-
-    <com.google.android.material.chip.Chip
-        android:id="@+id/chip7"
-        android:layout_width="98dp"
-        android:layout_height="47dp"
-        android:layout_marginStart="4dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/taskRecyclerView"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <com.google.android.material.chip.Chip
-        android:id="@+id/chip6"
-        android:layout_width="98dp"
-        android:layout_height="47dp"
-        android:layout_marginEnd="16dp"
-        app:layout_constraintBottom_toBottomOf="@+id/chip5"
-        app:layout_constraintEnd_toStartOf="@+id/view_tasks_fab"
-        app:layout_constraintTop_toTopOf="@+id/chip5"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <com.google.android.material.chip.Chip
-        android:id="@+id/chip5"
-        android:layout_width="98dp"
-        android:layout_height="47dp"
-        app:layout_constraintBottom_toBottomOf="@+id/chip7"
-        app:layout_constraintEnd_toStartOf="@+id/chip6"
-        app:layout_constraintStart_toEndOf="@+id/chip7"
-        app:layout_constraintTop_toTopOf="@+id/chip7" />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/taskRecyclerView"
-        android:layout_width="404dp"
-        android:layout_height="507dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.454"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.336" />
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        app:layout_constraintVertical_bias="1.0" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/view_tasks_fab"
@@ -74,20 +23,21 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         android:clickable="true"
-        app:backgroundTint="#3F51B5"
+        app:backgroundTint="#BCBCBC"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:rippleColor="#9C27B0"
-        app:srcCompat="@android:drawable/ic_input_add" />
+        app:srcCompat="@android:drawable/ic_input_add"
+        app:tint="@android:color/holo_blue_light" />
+
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:id="@+id/textView"
+        android:layout_width="410dp"
+        android:layout_height="54dp"
+        android:gravity="center"
         android:text="Click task to view / edit it"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.44"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

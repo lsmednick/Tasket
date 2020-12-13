@@ -35,6 +35,7 @@ public class ViewTasksActivity extends AppCompatActivity {
     private final ArrayList<String> deadlines = new ArrayList<>();
     private final ArrayList<String> categories = new ArrayList<>();
     private final ArrayList<String> priorities = new ArrayList<>();
+    private final ArrayList<String> status = new ArrayList<>();
     private String uid;
     FloatingActionButton fab;
 
@@ -88,6 +89,7 @@ public class ViewTasksActivity extends AppCompatActivity {
         deadlines.clear();
         categories.clear();
         priorities.clear();
+        status.clear();
     }
 
     @Override
@@ -99,6 +101,7 @@ public class ViewTasksActivity extends AppCompatActivity {
         deadlines.clear();
         categories.clear();
         priorities.clear();
+        status.clear();
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         populateTaskList(database);
     }
@@ -132,7 +135,10 @@ public class ViewTasksActivity extends AppCompatActivity {
                         for (String str : map.keySet()) {
                             switch (str) {
                                 case "category":
-                                    categories.add(map.get(str));
+                                    String t = map.get(str);
+                                    assert t != null;
+                                    String c = t.substring(0, 1).toUpperCase() + t.substring(1);
+                                    categories.add(c);
                                     break;
                                 case "deadlineDay":
                                     day = map.get(str);
@@ -152,17 +158,30 @@ public class ViewTasksActivity extends AppCompatActivity {
                                     images.add(map.get(str));
                                     break;
                                 case "priority":
-                                    priorities.add(map.get(str));
+                                    String temp = map.get(str);
+                                    assert temp != null;
+                                    String cap = temp.substring(0, 1).toUpperCase() + temp.substring(1);
+                                    priorities.add(cap);
                                     break;
                                 case "type":
-                                    types.add(map.get(str));
+                                    String ugh = map.get(str);
+                                    assert ugh != null;
+                                    String ca = ugh.substring(0, 1).toUpperCase() + ugh.substring(1);
+                                    types.add(ca);
+                                    break;
+                                case "status":
+                                    if (Objects.equals(map.get(str), "in progress")) {
+                                        status.add("In Progress");
+                                    } else {
+                                        status.add("Complete!");
+                                    }
                                     break;
                             }
                         }
                         deadlines.add(month + "/" + day + "/" + year);
                     }
                     mAdapter = new TaskCardRecyclerAdapter(ViewTasksActivity.this, names, deadlines, images,
-                            categories, priorities, types, taskIDs);
+                            categories, priorities, types, taskIDs, status);
                     recyclerView.setAdapter(mAdapter);
                 }
             }

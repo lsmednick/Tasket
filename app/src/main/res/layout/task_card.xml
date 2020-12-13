@@ -34,12 +34,12 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="@+id/cardCategory"
-                app:layout_constraintTop_toBottomOf="@+id/cardCategory"
+                app:layout_constraintStart_toStartOf="@+id/hourlyCardDate"
+                app:layout_constraintTop_toBottomOf="@+id/hourlyCardDate"
                 app:layout_constraintVertical_bias="0.0" />
 
             <TextView
-                android:id="@+id/cardName"
+                android:id="@+id/hourlyCardHours"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Task Name"
@@ -61,21 +61,21 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="@+id/cardName"
+                app:layout_constraintStart_toStartOf="@+id/hourlyCardHours"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.846" />
 
             <ImageView
                 android:id="@+id/cardImage"
-                android:layout_width="100dp"
-                android:layout_height="130dp"
+                android:layout_width="102dp"
+                android:layout_height="106dp"
                 android:contentDescription="@string/todo"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintHorizontal_bias="0.038"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="1.0"
+                app:layout_constraintVertical_bias="0.375"
                 tools:srcCompat="@tools:sample/avatars" />
 
             <TextView
@@ -89,12 +89,12 @@
                 app:layout_constraintBottom_toTopOf="@+id/cardDeadline"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="@+id/cardName"
-                app:layout_constraintTop_toBottomOf="@+id/cardName"
+                app:layout_constraintStart_toStartOf="@+id/hourlyCardHours"
+                app:layout_constraintTop_toBottomOf="@+id/hourlyCardHours"
                 app:layout_constraintVertical_bias="1.0" />
 
             <TextView
-                android:id="@+id/cardCategory"
+                android:id="@+id/hourlyCardDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Category"
@@ -106,18 +106,17 @@
                 app:layout_constraintTop_toTopOf="@+id/cardType"
                 app:layout_constraintVertical_bias="1.0" />
 
-            <ImageView
-                android:id="@+id/imageView"
-                android:layout_width="38dp"
-                android:layout_height="40dp"
-                app:layout_constraintBottom_toBottomOf="@+id/cardName"
+            <TextView
+                android:id="@+id/progressOrComplete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/hourlyCardHours"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.085"
-                app:layout_constraintStart_toEndOf="@+id/cardName"
-                app:layout_constraintTop_toTopOf="@+id/cardName"
-                app:srcCompat="@drawable/ic_default_img_white"
-                android:contentDescription="TODO"
-                app:tint="#646464" />
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/hourlyCardDate"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.64" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>

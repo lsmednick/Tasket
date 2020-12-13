@@ -1,13 +1,8 @@
 package edu.neu.madcourse.tasket;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -16,20 +11,25 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.InputFilter;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.chip.Chip;
-import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -41,6 +41,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Objects;
@@ -57,13 +58,24 @@ public class HourlyTaskActivity extends AppCompatActivity implements DatePickerD
     private String taskCategory;
     private String taskPicture;
     private String status;
+    private String uid;
+    private String hasTeam;
+    private HashMap<String, Object> collabs;
     TextView yearView;
     TextView monthView;
     TextView dayView;
     private FirebaseDatabase database;
     private FirebaseAuth mAuth;
+    private boolean hasHours;
     private boolean isNewTask;
     private String taskId;
+    // Recycler view essentials
+    private RecyclerView recyclerView;
+    private RecyclerView.Adapter mAdapter;
+    private LinearLayoutManager layoutManager;
+    private final ArrayList<String> emailList = new ArrayList<>();
+    private final ArrayList<String> nameList = new ArrayList<>();
+    private final ArrayList<String> imgList = new ArrayList<>();
     //storage
     StorageReference storageReference;
     //permissions constants
@@ -76,27 +88,40 @@ public class HourlyTaskActivity extends AppCompatActivity implements DatePickerD
     String[] storagePermissions;
     //uri of picked image
     Uri image_uri;
+    private String teamType;
+    private String teamKey;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_hourly_task);
+        hasTeam = "false";
+        hasHours = false;
         yearView = findViewById(R.id.year);
         monthView = findViewById(R.id.month);
         dayView = findViewById(R.id.date);
         database = FirebaseDatabase.getInstance();
         mAuth = FirebaseAuth.getInstance();
         isNewTask = getIntent().getBooleanExtra("isNewTask", false);
+        this.teamType = getIntent().getStringExtra("teamType");
+        this.teamKey = getIntent().getStringExtra("teamKey");
+
         storageReference = getInstance().getReference(); //firebase storage reference
         DatabaseReference tasksRef = database.getReference("tasks");
         taskId = tasksRef.push().getKey();
         ImageView img = findViewById(R.id.editTaskImage);
+        FirebaseUser user = mAuth.getCurrentUser();
+        uid = Objects.requireNonNull(user).getUid();
+        collabs = new HashMap<>();
 
         //init arrays of permissions
         cameraPermissions = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
         storagePermissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
+        DatabaseReference teamName = this.database.getReference(teamType + "/" + teamKey);
+        String hi = teamName.child("teamName").getKey();
+        System.out.println(hi);
         // Start with default values if this is a new task. Else populate task with databse values
         if (isNewTask) {
             taskName = "Task Name";
@@ -105,6 +130,29 @@ public class HourlyTaskActivity extends AppCompatActivity implements DatePickerD
             taskCategory = "work";
             taskPicture = "https://firebasestorage.googleapis.com/v0/b/tasket-bf4b2.appspot.com/o/Task_Images%2Ftasket_logo.png?alt=media&token=2501c751-14cf-4491-8fe8-02c945221b83";
             status = "in progress";
+            if (this.teamType != null) {
+                hasTeam = "true";
+                DatabaseReference teamRef = this.database.getReference(teamType + "/" +
+                        teamKey + "/associated_members");
+                teamRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        Log.i("EDIT TASK>>>>>>>>>>>>", "snapshot: " + snapshot.getKey());
+                        for (DataSnapshot postSnap : snapshot.getChildren()) {
+                            collabs.put(postSnap.getKey(), true);
+                            Log.i("EDIT TASK>>>>>>>>>>>>", "key " + postSnap.getKey());
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+            } else {
+                collabs.put(uid, true);
+            }
+            Log.i("EDIT TASK>>>>>>>>>>", collabs.toString());
             deadlineYear = Calendar.getInstance().get(Calendar.YEAR);
             yearView.setText(String.valueOf(deadlineYear));
             deadlineMonth = Calendar.getInstance().get(Calendar.MONTH);
@@ -114,6 +162,7 @@ public class HourlyTaskActivity extends AppCompatActivity implements DatePickerD
             img.setImageResource(R.drawable.tasket_logo);
         } else {
             String tID = getIntent().getStringExtra("taskID");
+            taskId = tID;
             DatabaseReference taskRef = FirebaseDatabase.getInstance().getReference("tasks/" +
                     tID);
             taskRef.addValueEventListener(new ValueEventListener() {
@@ -183,6 +232,23 @@ public class HourlyTaskActivity extends AppCompatActivity implements DatePickerD
                             case "type":
                                 taskType = (String) snap.getValue();
                                 break;
+                            case "status":
+                                status = (String) snap.getValue();
+                                break;
+                            case "collaborators":
+                                for (DataSnapshot s : snap.getChildren()) {
+                                    collabs.put(s.getKey(), true);
+                                }
+                                break;
+                            case "hasTeam":
+                                String temp = (String) snap.getValue();
+                                if (temp.equals("true")) {
+                                    hasTeam = "true";
+                                }
+                                break;
+                            case "hours":
+                                hasHours = true;
+                                break;
                         }
                     }
                     Picasso.get().load(taskPicture).into(img);
@@ -202,20 +268,123 @@ public class HourlyTaskActivity extends AppCompatActivity implements DatePickerD
             finish();
         });
         findViewById(R.id.editPhoto).setOnClickListener(v -> showImagePicDialog());
-        Button hours = findViewById(R.id.logButton);
-        hours.setOnClickListener(new View.OnClickListener() {
+        Button log = findViewById(R.id.logHoursButton2);
+        log.setOnClickListener(v -> {
+            if (isNewTask) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(HourlyTaskActivity.this);
+                builder.setTitle("Task must be created before logging hours. Hit SAVE to finish" +
+                        " creating task.");
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                builder.show();
+            } else {
+                Intent i = new Intent(HourlyTaskActivity.this, HourlyLog.class);
+                i.putExtra("taskID", taskId);
+                i.putExtra("hasHours", hasHours);
+                startActivity(i);
+            }
+        });
+        findViewById(R.id.edit_collaborators).setOnClickListener(v -> {
+            if (hasTeam.equals("true")) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(HourlyTaskActivity.this);
+                builder.setTitle("Collaborators already set to team.");
+                builder.setPositiveButton("OK", (dialog, which) -> dialog.cancel());
+                builder.show();
+            } else if (hasTeam.equals("false") && !isNewTask) {
+                Intent i = new Intent(HourlyTaskActivity.this, SearchForUserActivity.class);
+                startActivityForResult(i, 5);
+            } else {
+                String[] options = {"Search for user", "Select team"};
+                AlertDialog.Builder builder = new AlertDialog.Builder(HourlyTaskActivity.this);
+                builder.setTitle("Add user or create team task?\nThis can't be changed upon saving.").setItems(options,
+                        (dialog, which) -> {
+                            switch (which) {
+                                case 0:
+                                    Intent i = new Intent(HourlyTaskActivity.this, SearchForUserActivity.class);
+                                    startActivityForResult(i, 5);
+                                    break;
+                                case 1:
+                                    Intent g = new Intent(HourlyTaskActivity.this, ViewTeams.class);
+                                    startActivity(g);
+                                    finish();
+                                    break;
+                            }
+                        });
+                builder.show();
+            }
+        });
+
+        setPriorityListener();
+        setCategoryListener();
+        recyclerView = findViewById(R.id.editCollabRecyc);
+        recyclerView.setHasFixedSize(true);
+        layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        recyclerView.setLayoutManager(layoutManager);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        nameList.clear();
+        imgList.clear();
+        emailList.clear();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        nameList.clear();
+        imgList.clear();
+        emailList.clear();
+        setUpCollabRecycler();
+    }
+
+    // Helper method to set up collaborator recycler view
+    private void setUpCollabRecycler() {
+        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("Users");
+        usersRef.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onClick(View v) {
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot snap : snapshot.getChildren()) {
+                    if (collabs.containsKey(snap.getKey())) {
+                        HashMap<String, String> map = (HashMap<String, String>) snap.getValue();
+                        for (String str : map.keySet()) {
+                            switch (str) {
+                                case "email":
+                                    emailList.add(map.get(str));
+                                    break;
+                                case "image":
+                                    imgList.add(map.get(str));
+                                    break;
+                                case "name":
+                                    nameList.add(map.get(str));
+                                    System.out.println(map.get(str));
+                                    break;
+                            }
+                        }
+                    }
+                    mAdapter = new CollabCardRecyclerAdapter(HourlyTaskActivity.this, nameList, imgList,
+                            emailList);
+                    recyclerView.setAdapter(mAdapter);
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
 
             }
         });
-        findViewById(R.id.logButton).setOnClickListener(v -> {
-            Intent i = new Intent(HourlyTaskActivity.this, HourlyLog.class);
-            startActivity(i);
-        });
-        setPriorityListener();
-        setCategoryListener();
+
+
     }
+
+    // Helper method to prompt dialog to add collaborators
+
 
     // Helper method to prompt an alert dialog for a user to enter their task name.
     // Task names are limited to 10 characters.
@@ -223,7 +392,7 @@ public class HourlyTaskActivity extends AppCompatActivity implements DatePickerD
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Enter Task Name");
         final EditText input = new EditText(this);
-        input.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
+        input.setFilters(new InputFilter[]{new InputFilter.LengthFilter(11)});
         builder.setView(input);
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
@@ -379,22 +548,22 @@ public class HourlyTaskActivity extends AppCompatActivity implements DatePickerD
                         Toast.makeText(this, "Please enable camera & storage permission", Toast.LENGTH_SHORT).show();
                     }
                 }
+                break;
             }
-            break;
             case STORAGE_REQUEST_CODE: {
 
                 //picking from galler, first check if storage permissions allowed or not
                 if (grantResults.length > 0) {
-                    boolean writeStorageAccepted = grantResults[1] == PackageManager.PERMISSION_GRANTED;
+                    boolean writeStorageAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
                     if (writeStorageAccepted) {
                         //permissions enabled
+                        System.out.println(">>>>>>>>>>>Set permission");
                         pickFromGallery();
                     } else {
                         //pemissions denied
                         Toast.makeText(this, "Please enable storage permission", Toast.LENGTH_SHORT).show();
                     }
                 }
-
 
             }
             break;
@@ -438,6 +607,13 @@ public class HourlyTaskActivity extends AppCompatActivity implements DatePickerD
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         /*This method will be called after picking image from Camera or Gallery*/
         if (resultCode == RESULT_OK) {
+
+            if (requestCode == 5 && data != null) {
+                String userToAdd = data.getStringExtra("whichuser");
+                if (!collabs.containsKey(userToAdd)) {
+                    collabs.put(userToAdd, true);
+                }
+            }
 
             if (requestCode == IMAGE_PICK_GALLERY_CODE) {
                 //image is picked from gallery, get uri of image
@@ -510,8 +686,6 @@ public class HourlyTaskActivity extends AppCompatActivity implements DatePickerD
 
     private void saveNewTaskToDatabase() {
         DatabaseReference tasksRef = database.getReference("tasks");
-        FirebaseUser user = mAuth.getCurrentUser();
-        String uid = Objects.requireNonNull(user).getUid();
         DatabaseReference userRef = database.getReference("Users/" + uid + "/tasks");
 
         // Set up data to insert ito database
@@ -525,16 +699,27 @@ public class HourlyTaskActivity extends AppCompatActivity implements DatePickerD
         taskData.put("priority", taskPriority);
         taskData.put("category", taskCategory);
         taskData.put("status", status);
+        taskData.put("collaborators", collabs);
+        taskData.put("hasTeam", hasTeam);
+
+        for (String collaborator : collabs.keySet()) {
+            DatabaseReference collabRef = database.getReference("Users/" + collaborator + "/tasks");
+            collabRef.child(taskId).setValue(true);
+        }
 
         if (isNewTask) {
             tasksRef.child(Objects.requireNonNull(taskId)).setValue(taskData);
-            // Insert unique task ID into user section
-            userRef.child(taskId).setValue(true);
         } else {
-            System.out.println("NOT NEW TASK!!! NOT NEW TASK!!");
             tasksRef.child(getIntent().getStringExtra("taskID")).updateChildren(taskData);
         }
+
+        if (this.teamKey != null) {
+            // add to team
+            DatabaseReference teamRef = this.database.getReference(this.teamType + "/" + this.teamKey + "/tasks");
+            teamRef.child(taskId).setValue(true);
+        }
     }
+
 
     private void updateTask() {
 

@@ -23,6 +23,8 @@
         android:layout_margin="@dimen/fab_margin"
         android:clickable="true"
         android:src="@android:drawable/ic_input_add"
+        app:backgroundTint="#BCBCBC"
+        app:tint="@android:color/holo_blue_light"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

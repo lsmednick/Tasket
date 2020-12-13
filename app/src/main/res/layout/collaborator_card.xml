@@ -6,8 +6,10 @@
     android:layout_height="133dp">
 
     <androidx.cardview.widget.CardView
-        android:layout_width="191dp"
-        android:layout_height="117dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_percent="0.8"
+        app:layout_constraintWidth_percent="0.9"
         android:layout_margin="5dp"
         app:cardUseCompatPadding="true"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -22,18 +24,20 @@
 
             <ImageView
                 android:id="@+id/collabPic"
-                android:layout_width="63dp"
+                android:layout_width="68dp"
                 android:layout_height="55dp"
                 app:layout_constraintBottom_toTopOf="@+id/collabName"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHeight_percent="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_percent="0.5"
                 tools:srcCompat="@tools:sample/avatars" />
 
             <TextView
                 android:id="@+id/collabName"
-                android:layout_width="149dp"
-                android:layout_height="24dp"
+                android:layout_width="148dp"
+                android:layout_height="21dp"
                 android:gravity="center"
                 android:text="Name"
                 android:textAllCaps="false"

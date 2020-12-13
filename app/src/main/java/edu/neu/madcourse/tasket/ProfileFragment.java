@@ -382,7 +382,7 @@ public class ProfileFragment extends Fragment {
 
                 //picking from galler, first check if storage permissions allowed or not
                 if (grantResults.length > 0) {
-                    boolean writeStorageAccepted = grantResults[1] == PackageManager.PERMISSION_GRANTED;
+                    boolean writeStorageAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
                     if (writeStorageAccepted) {
                         //permissions enabled
                         pickFromGallery();
