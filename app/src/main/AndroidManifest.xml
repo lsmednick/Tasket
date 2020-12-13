@@ -15,10 +15,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Tasket">
 
-        <activity android:name=".ChatActivity"
-            android:theme="@style/AppThemeNo"/>
-        <activity android:name=".OtherProfileFragment" />
-        <activity android:name=".SearchForUserActivity"></activity>
+        <activity
+            android:name=".ChatActivity"
+            android:theme="@style/AppThemeNo" />
+        <activity
+            android:name=".OtherProfileFragment"
+            android:screenOrientation="portrait" />
+        <activity android:name=".SearchForUserActivity" />
         <activity android:name=".HourlyLog" />
         <activity android:name=".DashboardActivity" />
         <activity android:name=".EditTask" />
@@ -26,8 +29,12 @@
         <activity android:name=".ForgotPasswordActivity" />
         <activity android:name=".HourlyTaskActivity" />
         <activity android:name=".HomeActivity" />
-        <activity android:name=".ViewTeams" />
-        <activity android:name=".ViewTeam" />
+        <activity
+            android:name=".ViewTeams"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ViewTeam"
+            android:screenOrientation="portrait" />
         <activity android:name=".LoginActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
