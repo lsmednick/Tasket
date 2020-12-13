@@ -51,6 +51,8 @@ public class tabSubteam extends Fragment {
     private SimpleStringAdapter myAdapter;
 
     private HashMap<String, String> map;
+    private ArrayList<String> userprivileges;
+    private FloatingActionButton fab;
 
     public tabSubteam() {
         // Required empty public constructor
@@ -183,7 +185,7 @@ public class tabSubteam extends Fragment {
         //TODO for recycler use the same logic as in viewteams-- its essentially the same thing but with keys from the team instead of the user
 
 
-        FloatingActionButton fab = myView.findViewById(R.id.floatingActionButton_tab_subteam);
+        this.fab = myView.findViewById(R.id.floatingActionButton_tab_subteam);
         fab.setOnClickListener(v -> {
             Activity myActivity = this.getActivity();
             AlertDialog.Builder alert = new AlertDialog.Builder(this.getContext());
@@ -216,6 +218,9 @@ public class tabSubteam extends Fragment {
 
             alert.show();
         });
+
+        userprivileges = new ArrayList<>();
+        userOwner(this.key);
 
 
         return myView;
@@ -251,5 +256,37 @@ public class tabSubteam extends Fragment {
         Log.i("TAB SUB>>>>>>>>>", "added privileges to " + pushID.getKey());
 
         return pushID.getKey();
+    }
+
+    private void userOwner(String teamkey) {
+
+        ArrayList<String> priv = new ArrayList<String>();
+        DatabaseReference userRef = this.database.getReference("Users/" + CURRENT_USER_KEY + "/privileges");
+        userRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot postSnap : snapshot.getChildren()) {
+                    priv.add(postSnap.getKey());
+                }
+                System.out.println(priv);
+                setGlobalPrivileges(priv, teamkey);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+    }
+
+    private void setGlobalPrivileges(ArrayList<String> privs, String key) {
+        this.userprivileges = privs;
+        if (!userprivileges.contains(key)) {
+            this.fab.hide();
+        }
+        System.out.println("privs: " + this.userprivileges);
+
     }
 }
